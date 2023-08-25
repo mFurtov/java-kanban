@@ -1,16 +1,17 @@
-public class Subtask extends TaskClass{
+public class Subtask extends TaskClass {
     private int epicID;
 
-    public Subtask( String nameTask, String descriptionTask, String statusTask, int epicID) {
+    public Subtask(String nameTask, String descriptionTask, String statusTask, int epicID) {
         super(nameTask, descriptionTask);
         this.statusTask = statusTask;
-        this.epicID =epicID;
+        this.epicID = epicID;
 
     }
-    public Subtask( int idTask, String nameTask, String descriptionTask, String statusTask, int epicID) {
+
+    public Subtask(int idTask, String nameTask, String descriptionTask, String statusTask, int epicID) {
         super(idTask, nameTask, descriptionTask);
         this.statusTask = statusTask;
-        this.epicID =epicID;
+        this.epicID = epicID;
 
     }
 
@@ -29,7 +30,7 @@ public class Subtask extends TaskClass{
                 ", nameTask='" + nameTask + '\'' +
                 ", descriptionTask='" + descriptionTask + '\'' +
                 ", statusTask='" + statusTask + '\'' +
-                "epicId= " + epicID+
+                "epicId= " + epicID +
                 '}';
     }
 }

@@ -4,10 +4,11 @@ public class TaskClass {
     protected String descriptionTask;
     protected String statusTask;
 
-    public TaskClass( String nameTask, String descriptionTask) {
+    public TaskClass(String nameTask, String descriptionTask) {
         this.nameTask = nameTask;
         this.descriptionTask = descriptionTask;
     }
+
     public TaskClass(int idTask, String nameTask, String descriptionTask) {
         this.idTask = idTask;
         this.nameTask = nameTask;

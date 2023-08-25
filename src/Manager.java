@@ -1,13 +1,12 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class Manager {
     HashMap<Integer, Epic> epicTaskMap = new HashMap<>();
     HashMap<Integer, Subtask> subTaskMap = new HashMap<>();
     HashMap<Integer, CommonTask> commonTaskMap = new HashMap<>();
-    ArrayList<Object> allTask = new ArrayList<>();
+
     private int nextId = 1;
 
     public void addCommonTask(CommonTask commonTask) {
@@ -38,6 +37,7 @@ public class Manager {
     }
 
     public ArrayList<Object> returnAllTask() {
+        ArrayList<Object> allTask = new ArrayList<>();
         for (Map.Entry<Integer, Epic> entry : epicTaskMap.entrySet()) {
             allTask.add(entry);
         }
@@ -78,7 +78,7 @@ public class Manager {
         subTaskMap.put(subtask.getIdTask(), subtask);
         if (subtask.getEpicID() != 0) {
             Epic epic = epicTaskMap.get(subtask.getEpicID());
-            if (epic.subtaskID.contains(subtask.getIdTask())) {
+            if (epic.getSubtaskID().contains(subtask.getIdTask())) {
                 setEpicTaskStatus(epic);
             } else {
                 epic.getSubtaskID().add(subtask.getIdTask());
@@ -91,6 +91,29 @@ public class Manager {
         epicTaskMap.put(epic.getIdTask(), epic);
         updateListEpicTask(epic);
         setEpicTaskStatus(epic);
+    }
+
+    public void removeById(Integer id) {
+        if (commonTaskMap.containsKey(id)) {
+            commonTaskMap.remove(id);
+        } else if (subTaskMap.containsKey(id)) {
+            subTaskMap.remove(id);
+        } else if (epicTaskMap.containsKey(id)) {
+            Epic epic = epicTaskMap.get(id);
+            epic.getSubtaskID();
+            for (Integer item : epic.getSubtaskID()) {
+                subTaskMap.remove(item);
+            }
+            epicTaskMap.remove(id);
+        }
+    }
+
+    public ArrayList<Object> returnTaskByEpic(Epic epic) {
+        ArrayList<Object> allSubTaskByEpic = new ArrayList<>();
+        for (Integer idSubtask : epic.getSubtaskID()) {
+            allSubTaskByEpic.add(subTaskMap.get(idSubtask));
+        }
+        return allSubTaskByEpic;
     }
 
     private void updateListEpicTask(Epic epicTask) {
@@ -114,7 +137,7 @@ public class Manager {
         }
         int countDone = 0;
         int countNew = 0;
-        int countSubtaskInEpic = epicTask.subtaskID.size();
+        int countSubtaskInEpic = epicTask.getSubtaskID().size();
         for (String value : status) {
             if (value.equalsIgnoreCase("done")) {
                 countDone++;
