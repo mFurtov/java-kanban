@@ -8,6 +8,11 @@ public class TaskClass {
         this.nameTask = nameTask;
         this.descriptionTask = descriptionTask;
     }
+    public TaskClass(int idTask, String nameTask, String descriptionTask) {
+        this.idTask = idTask;
+        this.nameTask = nameTask;
+        this.descriptionTask = descriptionTask;
+    }
 
     public int getIdTask() {
         return idTask;
