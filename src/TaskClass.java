@@ -1,4 +1,4 @@
-public class TaskClass {
+abstract public class TaskClass {
     protected int idTask;
     protected String nameTask;
     protected String descriptionTask;
@@ -46,4 +46,5 @@ public class TaskClass {
     public void setStatusTask(String statusTask) {
         this.statusTask = statusTask;
     }
+
 }
