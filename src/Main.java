@@ -1,5 +1,7 @@
-import java.util.ArrayList;
-import java.util.Arrays;
+import com.yandex.app.model.CommonTask;
+import com.yandex.app.model.Epic;
+import com.yandex.app.model.Manager;
+import com.yandex.app.model.Subtask;
 
 public class Main {
 
@@ -12,9 +14,9 @@ public class Main {
         manager.addCommonTask(commonTask2);
         Epic epic1 = new Epic("Купить костюм на свадьбу", "Нужно собрать костюм на свадьбу друга");
         manager.addEpicTask(epic1);
-        Subtask subtask1 = new Subtask("Купить обувь", "45 размер", "nw", 3);
+        Subtask subtask1 = new Subtask("Купить обувь", "45 размер", "done", 3);
         manager.addSubTask(subtask1);
-        Subtask subtask2 = new Subtask("Купить брюки с рубашкой", "Нужно собрать костюм на свадьбу друга", "new", 3);
+        Subtask subtask2 = new Subtask("Купить брюки с рубашкой", "Нужно собрать костюм на свадьбу друга", "done", 3);
         manager.addSubTask(subtask2);
         Epic epic2 = new Epic("Приготовить яичницу", "Нужно позавтракать");
         manager.addEpicTask(epic2);
@@ -34,7 +36,7 @@ public class Main {
         System.out.println("До удаления задачи");
         System.out.println(manager.returnAllTask());
         System.out.println();
-        manager.removeById(2);
+        manager.removeCommonTask(2);
         System.out.println("После удаления задачи");
         System.out.println(manager.returnAllTask());
         System.out.println();
@@ -42,7 +44,7 @@ public class Main {
         System.out.println(manager.returnAllTask());
         System.out.println();
         System.out.println("После удаления эпика");
-        manager.removeById(5);
+        manager.removeEpic(3);
         System.out.println(manager.returnAllTask());
         System.out.println();
         System.out.println("До обновления подзадачи");
@@ -52,6 +54,7 @@ public class Main {
         System.out.println();
         System.out.println("После обновления подзадачи");
         System.out.println(manager.returnAllTask());
+
 
     }
 }
