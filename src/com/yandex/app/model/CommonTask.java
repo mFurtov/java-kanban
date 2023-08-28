@@ -1,3 +1,5 @@
+package com.yandex.app.model;
+
 public class CommonTask extends TaskClass {
 
     public CommonTask(String nameTask, String descriptionTask, String statusTask) {

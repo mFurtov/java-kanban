@@ -1,3 +1,5 @@
+package com.yandex.app.model;
+
 abstract public class TaskClass {
     protected int idTask;
     protected String nameTask;
