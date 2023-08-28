@@ -1,4 +1,4 @@
-package com.yandex.app.model;
+package ru.yandex.app.model;
 
 abstract public class TaskClass {
     protected int idTask;

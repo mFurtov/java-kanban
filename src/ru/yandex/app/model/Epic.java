@@ -1,4 +1,4 @@
-package com.yandex.app.model;
+package ru.yandex.app.model;
 
 import java.util.ArrayList;
 

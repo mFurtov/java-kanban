@@ -1,7 +1,9 @@
-import com.yandex.app.model.CommonTask;
-import com.yandex.app.model.Epic;
-import com.yandex.app.model.Manager;
-import com.yandex.app.model.Subtask;
+package ru;
+
+import ru.yandex.app.model.CommonTask;
+import ru.yandex.app.model.Epic;
+import ru.yandex.app.service.Manager;
+import ru.yandex.app.model.Subtask;
 
 public class Main {
 
@@ -32,7 +34,6 @@ public class Main {
         System.out.println("Список Эпиков");
         System.out.println(manager.returnAllEpic());
         System.out.println();
-        ;
         System.out.println("До удаления задачи");
         System.out.println(manager.returnAllTask());
         System.out.println();

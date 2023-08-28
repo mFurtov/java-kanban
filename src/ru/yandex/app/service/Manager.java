@@ -1,4 +1,9 @@
-package com.yandex.app.model;
+package ru.yandex.app.service;
+
+import ru.yandex.app.model.CommonTask;
+import ru.yandex.app.model.Epic;
+import ru.yandex.app.model.Subtask;
+import ru.yandex.app.model.TaskClass;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,6 +90,33 @@ public class Manager {
         commonTaskMap.remove(commonTaskMap.get(id).getIdTask());
     }
 
+    public void removeAllCommonTask() {
+        commonTaskMap.clear();
+    }
+
+    public void removeAllSubtask() {
+        for (Map.Entry subtask : subTaskMap.entrySet()) {
+            Epic epicParentToSubtask = epicTaskMap.get(subTaskMap.get(subtask.getKey()).getEpicId());
+            epicParentToSubtask.getSubtasksId().remove(subtask.getKey());
+            epicParentToSubtask.setStatusTask("NEW");
+        }
+        subTaskMap.clear();
+
+
+    }
+
+    public void removeAllEpic() {
+        for (Integer epicRemove : epicTaskMap.keySet()) {
+            Epic epic = epicTaskMap.get(epicRemove);
+            ArrayList<Integer> listSubtask = epic.getSubtasksId();
+            for (Integer integer : listSubtask) {
+                subTaskMap.remove(integer);
+            }
+        }
+        epicTaskMap.clear();
+    }
+
+
     public TaskClass returnTaskById(Integer id) {
 
         if (subTaskMap.containsKey(id)) {
@@ -107,7 +139,7 @@ public class Manager {
     }
 
     public void updateEpicCommonTask(Epic epic) {
-        Epic oldEpic = epicTaskMap.get(epic.idTask);
+        Epic oldEpic = epicTaskMap.get(epic.getIdTask());
         oldEpic.setNameTask(epic.getNameTask());
         oldEpic.setDescriptionTask(epic.getDescriptionTask());
     }
