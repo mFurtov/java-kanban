@@ -87,7 +87,7 @@ public class Manager {
     }
 
     public void removeCommonTask(int id) {
-        commonTaskMap.remove(commonTaskMap.get(id).getIdTask());
+        commonTaskMap.remove(id);
     }
 
     public void removeAllCommonTask() {
@@ -95,10 +95,9 @@ public class Manager {
     }
 
     public void removeAllSubtask() {
-        for (Map.Entry subtask : subTaskMap.entrySet()) {
-            Epic epicParentToSubtask = epicTaskMap.get(subTaskMap.get(subtask.getKey()).getEpicId());
-            epicParentToSubtask.getSubtasksId().remove(subtask.getKey());
-            epicParentToSubtask.setStatusTask("NEW");
+        for (Epic epic : epicTaskMap.values()) {
+            epic.getSubtasksId().clear();
+            epic.setStatusTask("NEW");
         }
         subTaskMap.clear();
 
@@ -106,13 +105,7 @@ public class Manager {
     }
 
     public void removeAllEpic() {
-        for (Integer epicRemove : epicTaskMap.keySet()) {
-            Epic epic = epicTaskMap.get(epicRemove);
-            ArrayList<Integer> listSubtask = epic.getSubtasksId();
-            for (Integer integer : listSubtask) {
-                subTaskMap.remove(integer);
-            }
-        }
+        subTaskMap.clear();
         epicTaskMap.clear();
     }
 

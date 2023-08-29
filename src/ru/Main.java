@@ -37,7 +37,7 @@ public class Main {
         System.out.println("До удаления задачи");
         System.out.println(manager.returnAllTask());
         System.out.println();
-        manager.removeCommonTask(2);
+        //manager.removeCommonTask(2);
         System.out.println("После удаления задачи");
         System.out.println(manager.returnAllTask());
         System.out.println();
@@ -45,7 +45,7 @@ public class Main {
         System.out.println(manager.returnAllTask());
         System.out.println();
         System.out.println("После удаления эпика");
-        manager.removeEpic(3);
+        //manager.removeEpic(3);
         System.out.println(manager.returnAllTask());
         System.out.println();
         System.out.println("До обновления подзадачи");
@@ -55,7 +55,5 @@ public class Main {
         System.out.println();
         System.out.println("После обновления подзадачи");
         System.out.println(manager.returnAllTask());
-
-
     }
 }
