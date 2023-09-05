@@ -6,6 +6,7 @@ import ru.yandex.app.model.Subtask;
 import ru.yandex.app.model.TaskClass;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
     void addCommonTask(CommonTask commonTask);
@@ -44,5 +45,8 @@ public interface TaskManager {
     ArrayList<TaskClass> returnTaskByEpic(int id);
 
     void setEpicTaskStatus(Epic epicTask);
+
+    List<TaskClass> getHistory();
+
 
 }

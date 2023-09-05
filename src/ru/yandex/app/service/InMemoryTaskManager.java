@@ -7,12 +7,14 @@ import ru.yandex.app.model.TaskClass;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Epic> epicTaskMap = new HashMap<>();
     private HashMap<Integer, Subtask> subTaskMap = new HashMap<>();
     private HashMap<Integer, CommonTask> commonTaskMap = new HashMap<>();
+    private static List<TaskClass> tasksHistoryList = new ArrayList<>();
     private int nextId = 1;
 
     @Override
@@ -186,6 +188,19 @@ public class InMemoryTaskManager implements TaskManager {
             epicTask.setStatusTask("IN_PROGRESS");
         }
 
+    }
+
+    @Override
+    public List<TaskClass> getHistory() {
+        return tasksHistoryList;
+    }
+    public void putInList(TaskClass task){
+        if(tasksHistoryList.size()<=10){
+            tasksHistoryList.add(task);
+        }else{
+            tasksHistoryList.remove(0);
+            tasksHistoryList.add(task);
+        }
     }
 
     private int generateNextID() {
