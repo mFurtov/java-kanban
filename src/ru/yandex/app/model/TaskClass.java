@@ -4,7 +4,7 @@ abstract public class TaskClass {
     protected int idTask;
     protected String nameTask;
     protected String descriptionTask;
-    protected String statusTask;
+    protected Status statusTask;
 
     public TaskClass(String nameTask, String descriptionTask) {
         this.nameTask = nameTask;
@@ -41,11 +41,11 @@ abstract public class TaskClass {
         this.descriptionTask = descriptionTask;
     }
 
-    public String getStatusTask() {
+    public Status getStatusTask() {
         return statusTask;
     }
 
-    public void setStatusTask(String statusTask) {
+    public void setStatusTask(Status statusTask) {
         this.statusTask = statusTask;
     }
 

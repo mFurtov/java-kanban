@@ -1,9 +1,6 @@
 package ru.yandex.app.service;
 
-import ru.yandex.app.model.CommonTask;
-import ru.yandex.app.model.Epic;
-import ru.yandex.app.model.Subtask;
-import ru.yandex.app.model.TaskClass;
+import ru.yandex.app.model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,8 +11,9 @@ public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Epic> epicTaskMap = new HashMap<>();
     private HashMap<Integer, Subtask> subTaskMap = new HashMap<>();
     private HashMap<Integer, CommonTask> commonTaskMap = new HashMap<>();
-    private static List<TaskClass> tasksHistoryList = new ArrayList<>();
     private int nextId = 1;
+
+    HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
     public void addCommonTask(CommonTask commonTask) {
@@ -47,17 +45,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public ArrayList<Epic> returnAllEpic() {
+        enumerationMap(epicTaskMap);
         return new ArrayList<>(epicTaskMap.values());
     }
 
     @Override
     public ArrayList<CommonTask> returnAllCommonTask() {
+        enumerationMap(commonTaskMap);
         return new ArrayList<>(commonTaskMap.values());
     }
 
     @Override
     public ArrayList<Subtask> returnAllSubtask() {
-
+        enumerationMap(subTaskMap);
         return new ArrayList<>(subTaskMap.values());
     }
 
@@ -67,12 +67,15 @@ public class InMemoryTaskManager implements TaskManager {
 
         for (Map.Entry<Integer, Epic> entry : epicTaskMap.entrySet()) {
             allTask.add(entry.getValue());
+            historyManager.add(entry.getValue());
         }
         for (Map.Entry<Integer, Subtask> entry : subTaskMap.entrySet()) {
             allTask.add(entry.getValue());
+            historyManager.add(entry.getValue());
         }
         for (Map.Entry<Integer, CommonTask> entry : commonTaskMap.entrySet()) {
             allTask.add(entry.getValue());
+            historyManager.add(entry.getValue());
         }
         return allTask;
     }
@@ -110,7 +113,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeAllSubtask() {
         for (Epic epic : epicTaskMap.values()) {
             epic.getSubtasksId().clear();
-            epic.setStatusTask("NEW");
+            epic.setStatusTask(Status.NEW);
         }
         subTaskMap.clear();
 
@@ -127,10 +130,13 @@ public class InMemoryTaskManager implements TaskManager {
     public TaskClass returnTaskById(Integer id) {
 
         if (subTaskMap.containsKey(id)) {
+            historyManager.add(subTaskMap.get(id));
             return subTaskMap.get(id);
         } else if (commonTaskMap.containsKey(id)) {
+            historyManager.add(commonTaskMap.get(id));
             return commonTaskMap.get(id);
         } else {
+            historyManager.add(epicTaskMap.get(id));
             return epicTaskMap.get(id);
         }
     }
@@ -160,6 +166,7 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epicTaskMap.get(id);
         for (Integer idSubtask : epic.getSubtasksId()) {
             allSubTaskByEpic.add(subTaskMap.get(idSubtask));
+            historyManager.add(subTaskMap.get(idSubtask));
         }
         return allSubTaskByEpic;
     }
@@ -170,36 +177,33 @@ public class InMemoryTaskManager implements TaskManager {
         int countNew = 0;
         int countSubtaskInEpic = epicTask.getSubtasksId().size();
         for (Integer subtaskId : epicTask.getSubtasksId()) {
-            String status = subTaskMap.get(subtaskId).getStatusTask();
+            String status = String.valueOf(subTaskMap.get(subtaskId).getStatusTask());
             if (status.equalsIgnoreCase("done")) {
                 countDone++;
             } else if (status.equalsIgnoreCase("new")) {
                 countNew++;
             } else {
-                epicTask.setStatusTask("IN_PROGRESS");
+                epicTask.setStatusTask(Status.IN_PROGRESS);
                 return;
             }
         }
         if (countNew == countSubtaskInEpic) {
-            epicTask.setStatusTask("NEW");
+            epicTask.setStatusTask(Status.NEW);
         } else if (countDone == countSubtaskInEpic) {
-            epicTask.setStatusTask("DONE");
+            epicTask.setStatusTask(Status.DONE);
         } else {
-            epicTask.setStatusTask("IN_PROGRESS");
+            epicTask.setStatusTask(Status.IN_PROGRESS);
         }
 
     }
 
-    @Override
     public List<TaskClass> getHistory() {
-        return tasksHistoryList;
+        return historyManager.getHistory();
     }
-    public void putInList(TaskClass task){
-        if(tasksHistoryList.size()<=10){
-            tasksHistoryList.add(task);
-        }else{
-            tasksHistoryList.remove(0);
-            tasksHistoryList.add(task);
+
+    public <T extends TaskClass> void enumerationMap(HashMap<Integer, T> taskMap) {
+        for (Map.Entry<Integer, T> task : taskMap.entrySet()) {
+            historyManager.add(task.getValue());
         }
     }
 
