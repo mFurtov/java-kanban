@@ -6,6 +6,7 @@ import ru.yandex.app.model.Subtask;
 import ru.yandex.app.model.TaskClass;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public interface TaskManager {
@@ -47,5 +48,6 @@ public interface TaskManager {
 
     void setEpicTaskStatus(Epic epicTask);
 
+    List<TaskClass> getHistory();
 
 }

@@ -10,7 +10,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
+        TaskManager inMemoryTaskManager = Managers.getDefault();
         CommonTask commonTask1 = new CommonTask("Сходить на почту"
                 , "получить поссылку из деревни", Status.IN_PROGRESS);
         inMemoryTaskManager.addCommonTask(commonTask1);

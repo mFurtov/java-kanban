@@ -13,7 +13,7 @@ public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, CommonTask> commonTaskMap = new HashMap<>();
     private int nextId = 1;
 
-    HistoryManager historyManager = Managers.getDefaultHistory();
+    private HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
     public void addCommonTask(CommonTask commonTask) {
@@ -197,6 +197,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     }
 
+    @Override
     public List<TaskClass> getHistory() {
         return historyManager.getHistory();
     }
