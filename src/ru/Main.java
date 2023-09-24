@@ -25,57 +25,25 @@ public class Main {
         Subtask subtask2 = new Subtask("Купить брюки с рубашкой"
                 , "Нужно собрать костюм на свадьбу друга", Status.NEW, 3);
         inMemoryTaskManager.addSubTask(subtask2);
+        Subtask subtask3 = new Subtask("Купить букет жениху и невесте"
+                , "Нужно собрать костюм на свадьбу друга", Status.NEW, 3);
+        inMemoryTaskManager.addSubTask(subtask3);
         Epic epic2 = new Epic("Приготовить яичницу", "Нужно позавтракать");
         inMemoryTaskManager.addEpicTask(epic2);
-        Subtask subtask3 = new Subtask("Разбить яйца", "Разбить 2 яйца"
-                , Status.DONE, 6);
-        inMemoryTaskManager.addSubTask(subtask3);
 
-
-//        System.out.println("Список обычных задач");
-//        System.out.println(inMemoryTaskManager.returnAllCommonTask());
-//        System.out.println();
-//        System.out.println("Список подзадач задач");
-//        System.out.println(inMemoryTaskManager.returnAllSubtask());
-//        System.out.println();
-//        System.out.println("Список Эпиков");
-//        System.out.println(inMemoryTaskManager.returnAllEpic());
-//        System.out.println();
-//        System.out.println("До удаления задачи");
-//        System.out.println(inMemoryTaskManager.returnAllTask());
-//        System.out.println();
-//        inMemoryTaskManager.removeCommonTask(2);
-//        System.out.println("После удаления задачи");
-//        System.out.println(inMemoryTaskManager.returnAllTask());
-//        System.out.println();
-//        System.out.println("До удаления эпика");
-//        System.out.println(inMemoryTaskManager.returnAllTask());
-//        System.out.println();
-//        System.out.println("После удаления эпика");
-//        inMemoryTaskManager.removeEpic(3);
-//        System.out.println(inMemoryTaskManager.returnAllTask());
-//        System.out.println();
-//        System.out.println("До обновления подзадачи");
-//        System.out.println(inMemoryTaskManager.returnAllTask());
-//        Subtask subtask3new = new Subtask(7, "Разбить яйца", "Разбить 4 яйца", Status.NEW, 6);
-//        inMemoryTaskManager.updateSubtaskTask(subtask3new);
-//        System.out.println();
-//        System.out.println("После обновления подзадачи");
-//        System.out.println(inMemoryTaskManager.returnAllTask());
-//        System.out.println();
-//        System.out.println(inMemoryTaskManager.getHistory());
-
-
-        System.out.println(inMemoryTaskManager.returnAllCommonTask());
-        CommonTask commonTask3 = new CommonTask("qq", "пармезан для пасты"
-                , Status.IN_PROGRESS);
-        inMemoryTaskManager.addCommonTask(commonTask3);
-        System.out.println(inMemoryTaskManager.returnTaskById(8));
-        System.out.println(inMemoryTaskManager.returnTaskById(1));
-        System.out.println(inMemoryTaskManager.returnTaskById(2));
-        InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
-        System.out.println(historyManager.getHistory());
-
-
+        System.out.println(inMemoryTaskManager.returnAllTask());
+        System.out.println(inMemoryTaskManager.getHistory());
+        System.out.println();
+        inMemoryTaskManager.returnTaskById(4);
+        System.out.println(inMemoryTaskManager.getHistory());
+        System.out.println();
+        inMemoryTaskManager.returnTaskById(3);
+        System.out.println(inMemoryTaskManager.getHistory());
+        System.out.println();
+        inMemoryTaskManager.removeCommonTask(2);
+        System.out.println(inMemoryTaskManager.getHistory());
+        System.out.println();
+        inMemoryTaskManager.removeEpic(3);
+        System.out.println(inMemoryTaskManager.getHistory());
     }
 }

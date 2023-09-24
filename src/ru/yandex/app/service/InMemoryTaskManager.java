@@ -86,7 +86,9 @@ public class InMemoryTaskManager implements TaskManager {
         ArrayList<Integer> listSubtask = epic.getSubtasksId();
         for (Integer integer : listSubtask) {
             subTaskMap.remove(integer);
+            historyManager.remove(integer);
         }
+        historyManager.remove(epic.getIdTask());
         epicTaskMap.remove(epic.getIdTask());
     }
 
@@ -95,33 +97,44 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epicParentToSubtask = epicTaskMap.get(subTaskMap.get(id).getEpicId());
         epicParentToSubtask.getSubtasksId().remove(id);
         subTaskMap.remove(id);
+        historyManager.remove(id);
         setEpicTaskStatus(epicParentToSubtask);
-
     }
 
     @Override
     public void removeCommonTask(int id) {
         commonTaskMap.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
     public void removeAllCommonTask() {
+        for (Integer id : commonTaskMap.keySet()) {
+            historyManager.remove(id);
+        }
         commonTaskMap.clear();
     }
 
     @Override
     public void removeAllSubtask() {
+        for (Integer id : subTaskMap.keySet()) {
+            historyManager.remove(id);
+        }
         for (Epic epic : epicTaskMap.values()) {
             epic.getSubtasksId().clear();
             epic.setStatusTask(Status.NEW);
         }
         subTaskMap.clear();
-
-
     }
 
     @Override
     public void removeAllEpic() {
+        for (Integer id : subTaskMap.keySet()) {
+            historyManager.remove(id);
+        }
+        for (Integer id : epicTaskMap.keySet()) {
+            historyManager.remove(id);
+        }
         subTaskMap.clear();
         epicTaskMap.clear();
     }
