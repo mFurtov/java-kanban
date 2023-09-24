@@ -212,7 +212,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<TaskClass> getHistory() {
-        return historyManager.getHistory();
+        return historyManager.getHistoryNode();
     }
 
     public <T extends TaskClass> void enumerationMap(HashMap<Integer, T> taskMap) {
