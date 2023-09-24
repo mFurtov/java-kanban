@@ -71,7 +71,11 @@ public class Main {
                 , Status.IN_PROGRESS);
         inMemoryTaskManager.addCommonTask(commonTask3);
         System.out.println(inMemoryTaskManager.returnTaskById(8));
+        System.out.println(inMemoryTaskManager.returnTaskById(1));
         System.out.println(inMemoryTaskManager.returnTaskById(2));
+        InMemoryHistoryManager historyManager = new InMemoryHistoryManager();
+        System.out.println(historyManager.getHistory());
+
 
     }
 }
