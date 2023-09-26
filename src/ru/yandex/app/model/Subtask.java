@@ -1,6 +1,6 @@
 package ru.yandex.app.model;
 
-public class Subtask extends TaskClass {
+public class Subtask extends AbstractTask {
     private final int epicId;
 
     public Subtask(String nameTask, String descriptionTask, Status statusTask, int epicId) {

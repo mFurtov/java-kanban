@@ -1,16 +1,16 @@
 package ru.yandex.app.service;
 
-import ru.yandex.app.model.CommonTask;
+import ru.yandex.app.model.CommonAbstractTask;
 import ru.yandex.app.model.Epic;
 import ru.yandex.app.model.Subtask;
-import ru.yandex.app.model.TaskClass;
+import ru.yandex.app.model.AbstractTask;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public interface TaskManager {
-    void addCommonTask(CommonTask commonTask);
+    void addCommonTask(CommonAbstractTask commonTask);
 
     void addEpicTask(Epic epicTask);
 
@@ -18,11 +18,11 @@ public interface TaskManager {
 
     ArrayList<Epic> returnAllEpic();
 
-    ArrayList<CommonTask> returnAllCommonTask();
+    ArrayList<CommonAbstractTask> returnAllCommonTask();
 
     ArrayList<Subtask> returnAllSubtask();
 
-    ArrayList<TaskClass> returnAllTask();
+    ArrayList<AbstractTask> returnAllTask();
 
     void removeEpic(int id);
 
@@ -36,18 +36,18 @@ public interface TaskManager {
 
     void removeAllCommonTask();
 
-    TaskClass returnTaskById(Integer id);
+    AbstractTask returnTaskById(Integer id);
 
-    void updateCommonTask(CommonTask commonTask);
+    void updateCommonTask(CommonAbstractTask commonTask);
 
     void updateSubtaskTask(Subtask subtask);
 
     void updateEpicCommonTask(Epic epic);
 
-    ArrayList<TaskClass> returnTaskByEpic(int id);
+    ArrayList<AbstractTask> returnTaskByEpic(int id);
 
     void setEpicTaskStatus(Epic epicTask);
 
-    List<TaskClass> getHistory();
+    List<AbstractTask> getHistory();
 
 }

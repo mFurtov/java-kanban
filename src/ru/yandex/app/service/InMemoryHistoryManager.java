@@ -1,13 +1,13 @@
 package ru.yandex.app.service;
 
-import ru.yandex.app.model.TaskClass;
+import ru.yandex.app.model.AbstractTask;
 
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private static final int MAX_LIST_SIZE = 10;
-    private static List<TaskClass> tasksHistoryList = new LinkedList<>();
-    private ArrayList<TaskClass> historyList;
+    private static List<AbstractTask> tasksHistoryList = new LinkedList<>();
+    private ArrayList<AbstractTask> historyList;
 
     private HashMap<Integer, Node> historyNode = new HashMap<>();
     private Node head;
@@ -15,7 +15,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
 
     @Override
-    public void add(TaskClass task) {
+    public void add(AbstractTask task) {
         if (tasksHistoryList.size() < MAX_LIST_SIZE) {
             tasksHistoryList.add(task);
         } else {
@@ -25,7 +25,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         linkLast(task);
     }
 
-    private void linkLast(TaskClass task) {
+    private void linkLast(AbstractTask task) {
         Node lastNode = tail;
         Node newNode = new Node(task, null, lastNode);
         if (historyNode.containsKey(task.getIdTask())) {
@@ -75,9 +75,9 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     }
 
-    public List<TaskClass> getHistoryNode() {
+    public List<AbstractTask> getHistoryNode() {
         historyList = new ArrayList<>();
-        Node<TaskClass> nowNode = head;
+        Node<AbstractTask> nowNode = head;
         for (int i = 0; i < historyNode.size(); i++) {
             if (nowNode.next == null) {
                 historyList.add(nowNode.data);

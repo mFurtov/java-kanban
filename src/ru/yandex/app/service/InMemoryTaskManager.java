@@ -10,13 +10,13 @@ import java.util.Map;
 public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Epic> epicTaskMap = new HashMap<>();
     private HashMap<Integer, Subtask> subTaskMap = new HashMap<>();
-    private HashMap<Integer, CommonTask> commonTaskMap = new HashMap<>();
+    private HashMap<Integer, CommonAbstractTask> commonTaskMap = new HashMap<>();
     private int nextId = 1;
 
     private HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
-    public void addCommonTask(CommonTask commonTask) {
+    public void addCommonTask(CommonAbstractTask commonTask) {
         commonTask.setIdTask(generateNextID());
         commonTaskMap.put(commonTask.getIdTask(), commonTask);
     }
@@ -50,7 +50,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<CommonTask> returnAllCommonTask() {
+    public ArrayList<CommonAbstractTask> returnAllCommonTask() {
         enumerationMap(commonTaskMap);
         return new ArrayList<>(commonTaskMap.values());
     }
@@ -62,8 +62,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<TaskClass> returnAllTask() {
-        ArrayList<TaskClass> allTask = new ArrayList<>();
+    public ArrayList<AbstractTask> returnAllTask() {
+        ArrayList<AbstractTask> allTask = new ArrayList<>();
 
         for (Map.Entry<Integer, Epic> entry : epicTaskMap.entrySet()) {
             allTask.add(entry.getValue());
@@ -73,7 +73,7 @@ public class InMemoryTaskManager implements TaskManager {
             allTask.add(entry.getValue());
             historyManager.add(entry.getValue());
         }
-        for (Map.Entry<Integer, CommonTask> entry : commonTaskMap.entrySet()) {
+        for (Map.Entry<Integer, CommonAbstractTask> entry : commonTaskMap.entrySet()) {
             allTask.add(entry.getValue());
             historyManager.add(entry.getValue());
         }
@@ -140,7 +140,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public TaskClass returnTaskById(Integer id) {
+    public AbstractTask returnTaskById(Integer id) {
 
         if (subTaskMap.containsKey(id)) {
             historyManager.add(subTaskMap.get(id));
@@ -155,7 +155,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateCommonTask(CommonTask commonTask) {
+    public void updateCommonTask(CommonAbstractTask commonTask) {
         commonTaskMap.put(commonTask.getIdTask(), commonTask);
     }
 
@@ -174,8 +174,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<TaskClass> returnTaskByEpic(int id) {
-        ArrayList<TaskClass> allSubTaskByEpic = new ArrayList<>();
+    public ArrayList<AbstractTask> returnTaskByEpic(int id) {
+        ArrayList<AbstractTask> allSubTaskByEpic = new ArrayList<>();
         Epic epic = epicTaskMap.get(id);
         for (Integer idSubtask : epic.getSubtasksId()) {
             allSubTaskByEpic.add(subTaskMap.get(idSubtask));
@@ -211,11 +211,11 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<TaskClass> getHistory() {
+    public List<AbstractTask> getHistory() {
         return historyManager.getHistoryNode();
     }
 
-    public <T extends TaskClass> void enumerationMap(HashMap<Integer, T> taskMap) {
+    public <T extends AbstractTask> void enumerationMap(HashMap<Integer, T> taskMap) {
         for (Map.Entry<Integer, T> task : taskMap.entrySet()) {
             historyManager.add(task.getValue());
         }

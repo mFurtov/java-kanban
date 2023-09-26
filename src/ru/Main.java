@@ -1,8 +1,6 @@
 package ru;
 
 import ru.yandex.app.model.*;
-import ru.yandex.app.service.InMemoryHistoryManager;
-import ru.yandex.app.service.InMemoryTaskManager;
 import ru.yandex.app.service.Managers;
 import ru.yandex.app.service.TaskManager;
 
@@ -11,10 +9,10 @@ public class Main {
     public static void main(String[] args) {
 
         TaskManager inMemoryTaskManager = Managers.getDefault();
-        CommonTask commonTask1 = new CommonTask("Сходить на почту"
+        CommonAbstractTask commonTask1 = new CommonAbstractTask("Сходить на почту"
                 , "получить поссылку из деревни", Status.IN_PROGRESS);
         inMemoryTaskManager.addCommonTask(commonTask1);
-        CommonTask commonTask2 = new CommonTask("Купить сыра", "пармезан для пасты"
+        CommonAbstractTask commonTask2 = new CommonAbstractTask("Купить сыра", "пармезан для пасты"
                 , Status.IN_PROGRESS);
         inMemoryTaskManager.addCommonTask(commonTask2);
         Epic epic1 = new Epic("Купить костюм на свадьбу"

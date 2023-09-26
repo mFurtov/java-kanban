@@ -1,13 +1,13 @@
 package ru.yandex.app.model;
 
-public class CommonTask extends TaskClass {
+public class CommonAbstractTask extends AbstractTask {
 
-    public CommonTask(String nameTask, String descriptionTask, Status statusTask) {
+    public CommonAbstractTask(String nameTask, String descriptionTask, Status statusTask) {
         super(nameTask, descriptionTask);
         this.statusTask = statusTask;
     }
 
-    public CommonTask(int idTask, String nameTask, String descriptionTask, Status statusTask) {
+    public CommonAbstractTask(int idTask, String nameTask, String descriptionTask, Status statusTask) {
         super(idTask, nameTask, descriptionTask);
         this.statusTask = statusTask;
     }

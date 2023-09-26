@@ -1,13 +1,13 @@
 package ru.yandex.app.service;
 
-import ru.yandex.app.model.TaskClass;
+import ru.yandex.app.model.AbstractTask;
 
 import java.util.List;
 
 public interface HistoryManager {
-    void add(TaskClass task);
+    void add(AbstractTask task);
 
-    List<TaskClass> getHistoryNode();
+    List<AbstractTask> getHistoryNode();
 
     void remove(int id);
 }

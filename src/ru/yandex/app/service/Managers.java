@@ -1,8 +1,6 @@
 package ru.yandex.app.service;
 
-import ru.yandex.app.model.CommonTask;
-
-public class Managers {
+public final class Managers {
 
     private Managers() {
     }
