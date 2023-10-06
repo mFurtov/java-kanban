@@ -225,4 +225,15 @@ public class InMemoryTaskManager implements TaskManager {
         return nextId++;
     }
 
+    public HashMap<Integer, Epic> getEpicTaskMap() {
+        return epicTaskMap;
+    }
+
+    public HashMap<Integer, Subtask> getSubTaskMap() {
+        return subTaskMap;
+    }
+
+    public HashMap<Integer, CommonAbstractTask> getCommonTaskMap() {
+        return commonTaskMap;
+    }
 }
