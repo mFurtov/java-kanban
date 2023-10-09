@@ -24,12 +24,11 @@ public class Subtask extends AbstractTask {
 
     @Override
     public String toString() {
-        return "Subtask{" +
-                ", idTask=" + idTask +
-                ", nameTask='" + nameTask + '\'' +
-                ", descriptionTask='" + descriptionTask + '\'' +
-                ", statusTask='" + statusTask + '\'' +
-                "epicId= " + epicId +
-                '}';
+        return idTask + ","
+                + TypeTask.SUBTASK + ","
+                + nameTask + ","
+                + statusTask + ","
+                + descriptionTask + ","
+                + epicId;
     }
 }

@@ -24,11 +24,10 @@ public class Epic extends AbstractTask {
 
     @Override
     public String toString() {
-        return "Epic{" +
-                ", idTask=" + idTask +
-                ", nameTask='" + nameTask + '\'' +
-                ", descriptionTask='" + descriptionTask + '\'' +
-                ", statusTask='" + statusTask + '\'' +
-                '}';
+        return idTask + ","
+                + TypeTask.EPIC + ","
+                + nameTask + ","
+                + statusTask + ","
+                + descriptionTask;
     }
 }

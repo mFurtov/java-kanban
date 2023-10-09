@@ -10,13 +10,14 @@ import java.util.Map;
 public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Epic> epicTaskMap = new HashMap<>();
     private HashMap<Integer, Subtask> subTaskMap = new HashMap<>();
-    private HashMap<Integer, CommonAbstractTask> commonTaskMap = new HashMap<>();
+    private HashMap<Integer, CommonTask> commonTaskMap = new HashMap<>();
     private int nextId = 1;
+
 
     private HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
-    public void addCommonTask(CommonAbstractTask commonTask) {
+    public void addCommonTask(CommonTask commonTask) {
         commonTask.setIdTask(generateNextID());
         commonTaskMap.put(commonTask.getIdTask(), commonTask);
     }
@@ -50,7 +51,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<CommonAbstractTask> returnAllCommonTask() {
+    public ArrayList<CommonTask> returnAllCommonTask() {
         enumerationMap(commonTaskMap);
         return new ArrayList<>(commonTaskMap.values());
     }
@@ -73,7 +74,7 @@ public class InMemoryTaskManager implements TaskManager {
             allTask.add(entry.getValue());
             historyManager.add(entry.getValue());
         }
-        for (Map.Entry<Integer, CommonAbstractTask> entry : commonTaskMap.entrySet()) {
+        for (Map.Entry<Integer, CommonTask> entry : commonTaskMap.entrySet()) {
             allTask.add(entry.getValue());
             historyManager.add(entry.getValue());
         }
@@ -155,7 +156,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateCommonTask(CommonAbstractTask commonTask) {
+    public void updateCommonTask(CommonTask commonTask) {
         commonTaskMap.put(commonTask.getIdTask(), commonTask);
     }
 
@@ -212,7 +213,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<AbstractTask> getHistory() {
-        return historyManager.getHistoryNode();
+        return historyManager.getHistory();
     }
 
     public <T extends AbstractTask> void enumerationMap(HashMap<Integer, T> taskMap) {
@@ -233,7 +234,11 @@ public class InMemoryTaskManager implements TaskManager {
         return subTaskMap;
     }
 
-    public HashMap<Integer, CommonAbstractTask> getCommonTaskMap() {
+    public HashMap<Integer, CommonTask> getCommonTaskMap() {
         return commonTaskMap;
+    }
+
+    public HistoryManager getHistoryManager() {
+        return historyManager;
     }
 }

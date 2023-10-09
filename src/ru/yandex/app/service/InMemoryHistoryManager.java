@@ -9,6 +9,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     private static List<AbstractTask> tasksHistoryList = new LinkedList<>();
     private ArrayList<AbstractTask> historyList;
 
+
     private HashMap<Integer, Node> historyNode = new HashMap<>();
     private Node head;
     private Node tail;
@@ -75,7 +76,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     }
 
-    public List<AbstractTask> getHistoryNode() {
+    public List<AbstractTask> getHistory() {
         historyList = new ArrayList<>();
         Node<AbstractTask> nowNode = head;
         for (int i = 0; i < historyNode.size(); i++) {
