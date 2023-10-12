@@ -1,17 +1,17 @@
 package ru.yandex.app.model;
 
-abstract public class AbstractTask {
+public class AbstractTask {
     protected int idTask;
     protected String nameTask;
     protected String descriptionTask;
     protected Status statusTask;
 
-    AbstractTask(String nameTask, String descriptionTask) {
+    public AbstractTask(String nameTask, String descriptionTask) {
         this.nameTask = nameTask;
         this.descriptionTask = descriptionTask;
     }
 
-    AbstractTask(int idTask, String nameTask, String descriptionTask) {
+    public AbstractTask(int idTask, String nameTask, String descriptionTask) {
         this.idTask = idTask;
         this.nameTask = nameTask;
         this.descriptionTask = descriptionTask;

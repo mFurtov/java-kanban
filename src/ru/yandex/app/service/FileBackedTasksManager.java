@@ -112,7 +112,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public void save() {
         ArrayList<AbstractTask> allTask = inGeneralList();
-        try (Writer writer = new FileWriter("task.csv", StandardCharsets.UTF_8);) {
+        try (Writer writer = new FileWriter("task.csv", StandardCharsets.UTF_8)) {
             writer.write("id,type,name,status,description,epic\n");
             for (AbstractTask abstractTask : allTask) {
                 writer.write(abstractTask.toString() + "\n");
@@ -158,6 +158,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 } else if (task instanceof CommonTask) {
                     HashMap<Integer, CommonTask> commonTaskMap = fileBackedTasksManager.getCommonTaskMap();
                     commonTaskMap.put(task.getIdTask(), (CommonTask) task);
+                }else {
+                    throw new IllegalArgumentException("Необходимо проверить файл, у одной из указанных задач не верный тип");
                 }
             }
             for (Integer integer : historyFromString(line[line.length - 1])) {
@@ -246,6 +248,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         fileBackedTasksManager.addSubTask(subtask3);
         fileBackedTasksManager.returnAllCommonTask();
         fileBackedTasksManager.returnAllEpic();
+        fileBackedTasksManager.returnTaskById(5);
+        fileBackedTasksManager.returnTaskById(2);
         System.out.println(fileBackedTasksManager.getHistory());
         FileBackedTasksManager newFileBackedTasksManager = FileBackedTasksManager.loadFromFile("task.csv");
         System.out.println(newFileBackedTasksManager.getHistory());

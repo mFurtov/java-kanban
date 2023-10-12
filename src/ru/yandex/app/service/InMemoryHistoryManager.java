@@ -6,13 +6,17 @@ import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private static final int MAX_LIST_SIZE = 10;
-    private static List<AbstractTask> tasksHistoryList = new LinkedList<>();
-    private ArrayList<AbstractTask> historyList;
-
-
-    private HashMap<Integer, Node> historyNode = new HashMap<>();
+    private ArrayList<AbstractTask> tasksHistoryList;
+    private HashMap<Integer, Node> historyNode;
     private Node head;
     private Node tail;
+
+    public InMemoryHistoryManager() {
+        this.tasksHistoryList = new ArrayList<>();
+        this.historyNode = new HashMap<>();
+        this.head = null;
+        this.tail = null;
+    }
 
 
     @Override
@@ -27,6 +31,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private void linkLast(AbstractTask task) {
+
         Node lastNode = tail;
         Node newNode = new Node(task, null, lastNode);
         if (historyNode.containsKey(task.getIdTask())) {
@@ -77,7 +82,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     public List<AbstractTask> getHistory() {
-        historyList = new ArrayList<>();
+        ArrayList<AbstractTask> historyList = new ArrayList<>();
         Node<AbstractTask> nowNode = head;
         for (int i = 0; i < historyNode.size(); i++) {
             if (nowNode.next == null) {
