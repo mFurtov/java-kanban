@@ -240,20 +240,20 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 , "Нужно собрать костюм на свадьбу друга", Status.NEW, 3);
 
         FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager();
-        fileBackedTasksManager.addCommonTask(commonTask1);
-        fileBackedTasksManager.addCommonTask(commonTask2);
-        fileBackedTasksManager.addEpicTask(epic1);
-        fileBackedTasksManager.addSubTask(subtask1);
-        fileBackedTasksManager.addSubTask(subtask2);
-        fileBackedTasksManager.addSubTask(subtask3);
-        fileBackedTasksManager.returnAllCommonTask();
-        fileBackedTasksManager.returnAllEpic();
-        fileBackedTasksManager.returnTaskById(5);
-        fileBackedTasksManager.returnTaskById(2);
-        System.out.println(fileBackedTasksManager.getHistory());
-        FileBackedTasksManager newFileBackedTasksManager = FileBackedTasksManager.loadFromFile("task.csv");
-        System.out.println(newFileBackedTasksManager.getHistory());
 
+//        fileBackedTasksManager.addCommonTask(commonTask1);
+//        fileBackedTasksManager.addCommonTask(commonTask2);
+//        fileBackedTasksManager.addEpicTask(epic1);
+//        fileBackedTasksManager.addSubTask(subtask1);
+//        fileBackedTasksManager.addSubTask(subtask2);
+//        fileBackedTasksManager.addSubTask(subtask3);
+//        fileBackedTasksManager.returnAllCommonTask();
+//        fileBackedTasksManager.returnAllEpic();
+//        fileBackedTasksManager.returnTaskById(5);
+//        fileBackedTasksManager.returnTaskById(2);
+//        System.out.println(fileBackedTasksManager.getHistory());
+//        FileBackedTasksManager newFileBackedTasksManager = FileBackedTasksManager.loadFromFile("task.csv");
+//        System.out.println(newFileBackedTasksManager.getHistory());
 
     }
 }
