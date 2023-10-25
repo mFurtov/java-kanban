@@ -236,9 +236,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public static void main(String[] args) {
         CommonTask commonTask1 = new CommonTask("Сходить на почту"
-                , "получить поссылку из деревни", Status.IN_PROGRESS);
+                , "получить поссылку из деревни", Status.IN_PROGRESS,"12:30","90");
         CommonTask commonTask2 = new CommonTask("Купить сыра", "пармезан для пасты"
-                , Status.IN_PROGRESS);
+                , Status.IN_PROGRESS,"15:30","80");
 
         Epic epic1 = new Epic("Купить костюм на свадьбу"
                 , "Нужно собрать костюм на свадьбу друга");

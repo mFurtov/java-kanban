@@ -19,7 +19,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void addCommonTask() {
         T taskManager = generateTaskManager();
         CommonTask commonTask = new CommonTask("Test addNewTask"
-                , "Test addNewTask description", Status.NEW);
+                , "Test addNewTask description", Status.NEW,"12:30","90");
         taskManager.addCommonTask(commonTask);
         final CommonTask savedTask = (CommonTask) taskManager.returnTaskById(1);
         assertNotNull(savedTask, "Задача не найдена");
@@ -110,7 +110,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         assertTrue(emptyList.isEmpty(), "Лист не пустой");
 
         CommonTask commonTask = new CommonTask("Test returnAllCommonTaskTest"
-                , "Test returnAllCommonTaskTest description", Status.NEW);
+                , "Test returnAllCommonTaskTest description", Status.NEW,"12:30","90");
         taskManager.addCommonTask(commonTask);
         final ArrayList<CommonTask> commonTasksList = taskManager.returnAllCommonTask();
         assertFalse(commonTasksList.isEmpty(), "Лист пустой");
@@ -147,7 +147,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
                 , "Test returnAllTaskTest description", Status.NEW, 1);
         taskManager.addSubTask(subtask);
         CommonTask commonTask = new CommonTask("Test returnAllTaskTest"
-                , "Test returnAllTaskTest description", Status.NEW);
+                , "Test returnAllTaskTest description", Status.NEW,"12:30","90");
         taskManager.addCommonTask(commonTask);
         final ArrayList<AbstractTask> allTaskList = taskManager.returnAllTask();
         assertFalse(allTaskList.isEmpty(), "Лист пустой");
@@ -227,10 +227,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void removeCommonTaskTest() {
         T taskManager = generateTaskManager();
         CommonTask commonTaskOne = new CommonTask("Test removeCommonTaskTest"
-                , "Test removeCommonTaskTest description", Status.NEW);
+                , "Test removeCommonTaskTest description", Status.NEW,"12:30","90");
         taskManager.addCommonTask(commonTaskOne);
         CommonTask commonTaskTwo = new CommonTask("Test removeCommonTaskTest"
-                , "Test removeCommonTaskTest description", Status.NEW);
+                , "Test removeCommonTaskTest description", Status.NEW,"12:30","90");
         taskManager.addCommonTask(commonTaskTwo);
         taskManager.removeCommonTask(commonTaskOne.getIdTask());
 
@@ -250,10 +250,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
                         taskManager.removeAllSubtask()
                 , "Удаление пустого списка задач");
         CommonTask commonTaskOne = new CommonTask("Test removeAllCommonTaskTest"
-                , "Test removeAllCommonTaskTest description", Status.NEW);
+                , "Test removeAllCommonTaskTest description", Status.NEW,"12:30","90");
         taskManager.addCommonTask(commonTaskOne);
         CommonTask commonTaskTwo = new CommonTask("Test removeAllCommonTaskTest"
-                , "Test removeAllCommonTaskTest description", Status.NEW);
+                , "Test removeAllCommonTaskTest description", Status.NEW,"12:30","90");
         taskManager.addCommonTask(commonTaskTwo);
 
         taskManager.removeAllCommonTask();
@@ -329,7 +329,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
                 , "Test returnTaskByIdTest description", Status.DONE, 1);
         taskManager.addSubTask(subtaskOne);
         CommonTask commonTask = new CommonTask("Test returnTaskByIdTest"
-                , "Test returnTaskByIdTest description", Status.NEW);
+                , "Test returnTaskByIdTest description", Status.NEW,"12:30","90");
         taskManager.addCommonTask(commonTask);
 
         assertEquals(epicTaskOne, taskManager.returnTaskById(epicTaskOne.getIdTask())
@@ -348,7 +348,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void updateCommonTaskTask() {
         T taskManager = generateTaskManager();
         CommonTask commonTask = new CommonTask("Test updateCommonTaskTask"
-                , "Test updateCommonTaskTask description", Status.NEW);
+                , "Test updateCommonTaskTask description", Status.NEW,"12:30","90");
         taskManager.addCommonTask(commonTask);
         CommonTask commonTaskUpdate = new CommonTask(1, "Update"
                 , "Update", Status.NEW);

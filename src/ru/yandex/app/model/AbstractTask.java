@@ -1,10 +1,16 @@
 package ru.yandex.app.model;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
 public class AbstractTask {
     protected int idTask;
     protected String nameTask;
     protected String descriptionTask;
     protected Status statusTask;
+    protected String duration;
+    protected String startTime;
+    protected String endTime;
 
     public AbstractTask(String nameTask, String descriptionTask) {
         this.nameTask = nameTask;
@@ -15,6 +21,13 @@ public class AbstractTask {
         this.idTask = idTask;
         this.nameTask = nameTask;
         this.descriptionTask = descriptionTask;
+    }
+    public AbstractTask(String nameTask, String descriptionTask, Status statusTask,String startTime, String duration) {
+        this.nameTask = nameTask;
+        this.descriptionTask = descriptionTask;
+        this.duration = duration;
+        this.startTime = startTime;
+        this.statusTask = statusTask;
     }
 
     public int getIdTask() {
@@ -47,6 +60,12 @@ public class AbstractTask {
 
     public void setStatusTask(Status statusTask) {
         this.statusTask = statusTask;
+    }
+    public String getEndTime(){
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        Long durationAtTask = Long.parseLong(duration);
+        LocalTime startTimeAtTask = LocalTime.parse(startTime,dateTimeFormatter).plusMinutes(durationAtTask);
+        return  startTimeAtTask.format(dateTimeFormatter);
     }
 
 }

@@ -21,7 +21,10 @@ public class Epic extends AbstractTask {
         return subtasksId;
     }
 
-
+    @Override
+    public String getEndTime() {
+        return null;
+    }
     @Override
     public String toString() {
         return idTask + ","

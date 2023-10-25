@@ -9,6 +9,15 @@ public class Subtask extends AbstractTask {
         this.epicId = epicId;
 
     }
+    public Subtask(String nameTask, String descriptionTask, Status statusTask
+            , int epicId,String startTime, String duration) {
+        super(nameTask, descriptionTask);
+        this.statusTask = statusTask;
+        this.startTime = startTime;
+        this.duration = duration;
+        this.epicId = epicId;
+
+    }
 
     public Subtask(int idTask, String nameTask, String descriptionTask, Status statusTask, int epicId) {
         super(idTask, nameTask, descriptionTask);
