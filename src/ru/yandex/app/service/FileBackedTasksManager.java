@@ -6,10 +6,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
     public void addCommonTask(CommonTask commonTask) {
@@ -147,28 +144,38 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         try {
             String fileLine = Files.readString(Path.of(file));
             String[] line = fileLine.split("\n");
-            for (int i = 1; i < line.length - 2; i++) {
-                AbstractTask task = fileBackedTasksManager.fromString(line[i]);
-                if (task instanceof Epic) {
-                    HashMap<Integer, Epic> epicTaskMap = fileBackedTasksManager.getEpicTaskMap();
-                    epicTaskMap.put(task.getIdTask(), (Epic) task);
-                } else if (task instanceof Subtask) {
-                    HashMap<Integer, Subtask> subTaskMap = fileBackedTasksManager.getSubTaskMap();
-                    subTaskMap.put(task.getIdTask(), (Subtask) task);
-                } else if (task instanceof CommonTask) {
-                    HashMap<Integer, CommonTask> commonTaskMap = fileBackedTasksManager.getCommonTaskMap();
-                    commonTaskMap.put(task.getIdTask(), (CommonTask) task);
-                }else {
-                    throw new IllegalArgumentException("Необходимо проверить файл, у одной из указанных задач не верный тип");
+                if (line.length >=2) {
+                    for (int i = 1; i < line.length; i++) {
+                        if (!line[i].trim().isEmpty()) {
+                            AbstractTask task = fileBackedTasksManager.fromString(line[i]);
+                            if (task instanceof Epic) {
+                                HashMap<Integer, Epic> epicTaskMap = fileBackedTasksManager.getEpicTaskMap();
+                                epicTaskMap.put(task.getIdTask(), (Epic) task);
+                            } else if (task instanceof Subtask) {
+                                HashMap<Integer, Subtask> subTaskMap = fileBackedTasksManager.getSubTaskMap();
+                                subTaskMap.put(task.getIdTask(), (Subtask) task);
+                            } else if (task instanceof CommonTask) {
+                                HashMap<Integer, CommonTask> commonTaskMap = fileBackedTasksManager.getCommonTaskMap();
+                                commonTaskMap.put(task.getIdTask(), (CommonTask) task);
+                            } else {
+                                throw new IllegalArgumentException("Необходимо проверить файл, у одной из указанных задач не верный тип");
+                            }
+                        }else{
+                            break;
+                        }
+                    }
                 }
-            }
-            for (Integer integer : historyFromString(line[line.length - 1])) {
-                fileBackedTasksManager.getHistoryManager().add(fileBackedTasksManager
-                        .returnHistoryTask(integer, fileBackedTasksManager));
-            }
+                if (line.length > 2) {
+                    for (Integer integer : historyFromString(line[line.length - 1])) {
+                        fileBackedTasksManager.getHistoryManager().add(fileBackedTasksManager
+                                .returnHistoryTask(integer, fileBackedTasksManager));
+                    }
+                }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
         return fileBackedTasksManager;
     }
@@ -214,6 +221,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         for (String s : valueArray) {
             list.add(Integer.parseInt(s));
         }
+        Collections.reverse(list);
         return list;
     }
 
@@ -231,17 +239,21 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 , "получить поссылку из деревни", Status.IN_PROGRESS);
         CommonTask commonTask2 = new CommonTask("Купить сыра", "пармезан для пасты"
                 , Status.IN_PROGRESS);
+
         Epic epic1 = new Epic("Купить костюм на свадьбу"
                 , "Нужно собрать костюм на свадьбу друга");
+        Epic epic2 = new Epic(2, "Купить костюм на свадьбу"
+                , "Нужно собрать костюм на свадьбу друга");
         Subtask subtask1 = new Subtask("Купить обувь", "45 размер", Status.DONE, 3);
-        Subtask subtask2 = new Subtask("Купить брюки с рубашкой"
+        Subtask subtask2 = new Subtask(66, "Купить брюки с рубашкой"
                 , "Нужно собрать костюм на свадьбу друга", Status.NEW, 3);
         Subtask subtask3 = new Subtask("Купить букет жениху и невесте"
                 , "Нужно собрать костюм на свадьбу друга", Status.NEW, 3);
-
-
-
+//
+//
         FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager();
+
+
         fileBackedTasksManager.addCommonTask(commonTask1);
         fileBackedTasksManager.addCommonTask(commonTask2);
         fileBackedTasksManager.addEpicTask(epic1);
