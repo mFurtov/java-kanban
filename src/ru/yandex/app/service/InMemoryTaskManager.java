@@ -36,6 +36,7 @@ public class InMemoryTaskManager implements TaskManager {
             subTaskMap.put(subtask.getIdTask(), subtask);
             Epic epic = epicTaskMap.get(subtask.getEpicId());
             epic.getSubtasksId().add(subtask.getIdTask());
+            epic.getSubtaskInEpic().put(subtask.getIdTask(),subtask);
             setEpicTaskStatus(epic);
         } else {
             System.out.println("Нужен номер эпика для " + subtask.getNameTask() + ", она не может быть ноль");
@@ -97,6 +98,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeSubtask(Integer id) {
         Epic epicParentToSubtask = epicTaskMap.get(subTaskMap.get(id).getEpicId());
         epicParentToSubtask.getSubtasksId().remove(id);
+        epicParentToSubtask.getSubtaskInEpic().remove(id);
         subTaskMap.remove(id);
         historyManager.remove(id);
         setEpicTaskStatus(epicParentToSubtask);
@@ -123,6 +125,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
         for (Epic epic : epicTaskMap.values()) {
             epic.getSubtasksId().clear();
+            epic.getSubtaskInEpic().clear();
             epic.setStatusTask(Status.NEW);
         }
         subTaskMap.clear();

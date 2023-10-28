@@ -10,7 +10,6 @@ public class AbstractTask {
     protected Status statusTask;
     protected String duration;
     protected String startTime;
-    protected String endTime;
 
     public AbstractTask(String nameTask, String descriptionTask) {
         this.nameTask = nameTask;
@@ -56,6 +55,14 @@ public class AbstractTask {
 
     public Status getStatusTask() {
         return statusTask;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public String getStartTime() {
+        return startTime;
     }
 
     public void setStatusTask(Status statusTask) {
