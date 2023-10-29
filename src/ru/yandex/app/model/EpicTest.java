@@ -1,6 +1,5 @@
 package ru.yandex.app.model;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.app.service.InMemoryTaskManager;
 
@@ -88,13 +87,13 @@ class EpicTest {
 
     @Test
     void addVBasicEpcTest() {
-        Epic epic = new Epic( "Test addVBasicEpcTest"
+        Epic epic = new Epic("Test addVBasicEpcTest"
                 , "Test addVBasicEpcTest description");
         taskManager.addEpicTask(epic);
-        assertTrue(taskManager.getEpicTaskMap().containsValue(epic),"Такого епика нет");
+        assertTrue(taskManager.getEpicTaskMap().containsValue(epic), "Такого епика нет");
 
         final Epic checkEpic = taskManager.getEpicTaskMap().get(1);
-        assertEquals(epic,checkEpic,"Эпики не совпадают");
+        assertEquals(epic, checkEpic, "Эпики не совпадают");
 
         assertEquals(checkEpic.getStatusTask(), Status.NEW
                 , "У нового епика задачи должны быть новые");

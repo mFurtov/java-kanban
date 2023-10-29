@@ -7,6 +7,7 @@ import ru.yandex.app.model.AbstractTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 
 public interface TaskManager {
@@ -49,5 +50,7 @@ public interface TaskManager {
     void setEpicTaskStatus(Epic epicTask);
 
     List<AbstractTask> getHistory();
+
+    TreeSet<AbstractTask> getPrioritizedTasks();
 
 }

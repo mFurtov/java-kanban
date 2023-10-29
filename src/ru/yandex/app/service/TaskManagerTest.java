@@ -1,7 +1,6 @@
 package ru.yandex.app.service;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import ru.yandex.app.model.*;
 
 import java.util.ArrayList;
@@ -227,10 +226,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void removeCommonTaskTest() {
         T taskManager = generateTaskManager();
         CommonTask commonTaskOne = new CommonTask("Test removeCommonTaskTest"
-                , "Test removeCommonTaskTest description", Status.NEW,"12:30","90");
+                , "Test removeCommonTaskTest description", Status.NEW,"2012.11.11 12:30","90");
         taskManager.addCommonTask(commonTaskOne);
         CommonTask commonTaskTwo = new CommonTask("Test removeCommonTaskTest"
-                , "Test removeCommonTaskTest description", Status.NEW,"12:30","90");
+                , "Test removeCommonTaskTest description", Status.NEW,"2012.11.11 11:30","90");
         taskManager.addCommonTask(commonTaskTwo);
         taskManager.removeCommonTask(commonTaskOne.getIdTask());
 
@@ -250,10 +249,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
                         taskManager.removeAllSubtask()
                 , "Удаление пустого списка задач");
         CommonTask commonTaskOne = new CommonTask("Test removeAllCommonTaskTest"
-                , "Test removeAllCommonTaskTest description", Status.NEW,"12:30","90");
+                , "Test removeAllCommonTaskTest description", Status.NEW,"2012.11.11 12:30","90");
         taskManager.addCommonTask(commonTaskOne);
         CommonTask commonTaskTwo = new CommonTask("Test removeAllCommonTaskTest"
-                , "Test removeAllCommonTaskTest description", Status.NEW,"12:30","90");
+                , "Test removeAllCommonTaskTest description", Status.NEW,"2012.11.11 22:00","90");
         taskManager.addCommonTask(commonTaskTwo);
 
         taskManager.removeAllCommonTask();
@@ -348,11 +347,11 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void updateCommonTaskTask() {
         T taskManager = generateTaskManager();
         CommonTask commonTask = new CommonTask("Test updateCommonTaskTask"
-                , "Test updateCommonTaskTask description", Status.NEW,"12:30","90");
+                , "Test updateCommonTaskTask description", Status.NEW,"2021.12.12 12:30","90");
         taskManager.addCommonTask(commonTask);
         CommonTask commonTaskUpdate = new CommonTask(1, "Update"
-                , "Update", Status.NEW);
-
+                , "Update", Status.NEW,"2021.12.12 12:30","90");
+        taskManager.updateCommonTask(commonTaskUpdate);
         assertDoesNotThrow(() ->
                         taskManager.updateCommonTask(commonTaskUpdate)
                 , "Изменение задачи котрой нет, просто добавляет ее");
@@ -366,10 +365,9 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
         CommonTask commonTaskUpdate2 = new CommonTask(2, "Update"
                 , "Update", Status.NEW);
-        taskManager.addCommonTask(commonTask);
         final ArrayList<CommonTask> commonTaskListNew = taskManager.returnAllCommonTask();
         taskManager.updateCommonTask(commonTaskUpdate2);
-        assertEquals(2, commonTaskListNew.size(), "при неверном id список не добавил задачу");
+        assertEquals(1, commonTaskListNew.size(), "при неверном id список не добавил задачу");
 
 
     }
@@ -448,6 +446,63 @@ abstract class TaskManagerTest<T extends TaskManager> {
         final List<Subtask> subtaskListBasic = List.of(subtaskOne, subtaskTwo);
         assertEquals(subtaskListBasic.get(0), subtaskList.get(0), "Задачи не равны");
         assertEquals(subtaskListBasic.get(1), subtaskList.get(1), "Задачи не равны");
+    }
+
+
+    @Test
+    void setEpicTaskStatusTest() {
+        T taskManager = generateTaskManager();
+        Epic epicTaskOne = new Epic("Test setEpicTaskStatusTest"
+                , "Test setEpicTaskStatusTest description");
+        Subtask subtaskOne = new Subtask("Test setEpicTaskStatusTest"
+                , "Test setEpicTaskStatusTest description", Status.DONE, 1);
+        Subtask subtaskTwo = new Subtask("Test setEpicTaskStatusTest"
+                , "Test setEpicTaskStatusTest description", Status.IN_PROGRESS, 1);
+        taskManager.addEpicTask(epicTaskOne);
+
+        assertEquals(epicTaskOne.getStatusTask(),Status.NEW,"У епика статус не NEW");
+
+        taskManager.addSubTask(subtaskOne);
+        assertEquals(epicTaskOne.getStatusTask(),Status.DONE,"У епика статус не DONE");
+
+        taskManager.addSubTask(subtaskTwo);
+        assertEquals(epicTaskOne.getStatusTask(),Status.IN_PROGRESS,"У епика статус не IN_PROGRESS");
+
+    }
+
+    @Test
+    void getHistoryTest() {
+        T taskManager = generateTaskManager();
+        Epic epicTaskOne = new Epic("Test getHistoryTest"
+                , "Test getHistoryTest description");
+        Subtask subtaskOne = new Subtask("Test 1 getHistoryTest"
+                , "Test getHistoryTest description", Status.DONE, 1);
+        Subtask subtaskTwo = new Subtask("Test 2 getHistoryTest"
+                , "Test getHistoryTest description", Status.IN_PROGRESS, 1);
+        taskManager.addEpicTask(epicTaskOne);
+        taskManager.addSubTask(subtaskTwo);
+        taskManager.addSubTask(subtaskOne);
+        assertTrue(taskManager.getHistory().isEmpty(),"Список истории должен быть пустым");
+
+        taskManager.returnAllTask();
+        assertFalse(taskManager.getHistory().isEmpty(),"Список истории не должен быть пустым");
+
+    }
+
+    @Test
+    void getPrioritizedTasksTest() {
+        T taskManager = generateTaskManager();
+        assertTrue(taskManager.getPrioritizedTasks().isEmpty()
+                ,"Список задач сортированных по времени должен быть пустым");
+
+        CommonTask commonTask = new CommonTask("Test returnAllCommonTaskTest"
+                , "Test returnAllCommonTaskTest description", Status.NEW,"2022.10.23 12:30"
+                ,"90");
+        taskManager.addCommonTask(commonTask);
+        assertFalse(taskManager.getPrioritizedTasks().isEmpty()
+                ,"Список задач сортированных по времени должен быть пустым");
+
+
     }
 
 }

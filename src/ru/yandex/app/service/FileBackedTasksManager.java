@@ -110,9 +110,14 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public void save() {
         ArrayList<AbstractTask> allTask = inGeneralList();
         try (Writer writer = new FileWriter("task.csv", StandardCharsets.UTF_8)) {
-            writer.write("id,type,name,status,description,epic\n");
+            writer.write("id,type,name,status,description,epic,startTime,duration\n");
             for (AbstractTask abstractTask : allTask) {
-                writer.write(abstractTask.toString() + "\n");
+                if (abstractTask instanceof Epic) {
+                    writer.write(abstractTask.toString() + "\n");
+                } else {
+                    writer.write(abstractTask.toString()
+                            + "," + abstractTask.getStartTime() + "," + abstractTask.getDuration() + "\n");
+                }
             }
             writer.write("\n");
             writer.write(historyToString(super.getHistoryManager()));
@@ -144,33 +149,33 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         try {
             String fileLine = Files.readString(Path.of(file));
             String[] line = fileLine.split("\n");
-                if (line.length >=2) {
-                    for (int i = 1; i < line.length; i++) {
-                        if (!line[i].trim().isEmpty()) {
-                            AbstractTask task = fileBackedTasksManager.fromString(line[i]);
-                            if (task instanceof Epic) {
-                                HashMap<Integer, Epic> epicTaskMap = fileBackedTasksManager.getEpicTaskMap();
-                                epicTaskMap.put(task.getIdTask(), (Epic) task);
-                            } else if (task instanceof Subtask) {
-                                HashMap<Integer, Subtask> subTaskMap = fileBackedTasksManager.getSubTaskMap();
-                                subTaskMap.put(task.getIdTask(), (Subtask) task);
-                            } else if (task instanceof CommonTask) {
-                                HashMap<Integer, CommonTask> commonTaskMap = fileBackedTasksManager.getCommonTaskMap();
-                                commonTaskMap.put(task.getIdTask(), (CommonTask) task);
-                            } else {
-                                throw new IllegalArgumentException("Необходимо проверить файл, у одной из указанных задач не верный тип");
-                            }
-                        }else{
-                            break;
+            if (line.length >= 2) {
+                for (int i = 1; i < line.length; i++) {
+                    if (!line[i].trim().isEmpty()) {
+                        AbstractTask task = fileBackedTasksManager.fromString(line[i]);
+                        if (task instanceof Epic) {
+                            HashMap<Integer, Epic> epicTaskMap = fileBackedTasksManager.getEpicTaskMap();
+                            epicTaskMap.put(task.getIdTask(), (Epic) task);
+                        } else if (task instanceof Subtask) {
+                            HashMap<Integer, Subtask> subTaskMap = fileBackedTasksManager.getSubTaskMap();
+                            subTaskMap.put(task.getIdTask(), (Subtask) task);
+                        } else if (task instanceof CommonTask) {
+                            HashMap<Integer, CommonTask> commonTaskMap = fileBackedTasksManager.getCommonTaskMap();
+                            commonTaskMap.put(task.getIdTask(), (CommonTask) task);
+                        } else {
+                            throw new IllegalArgumentException("Необходимо проверить файл, у одной из указанных задач не верный тип");
                         }
+                    } else {
+                        break;
                     }
                 }
-                if (line.length > 2) {
-                    for (Integer integer : historyFromString(line[line.length - 1])) {
-                        fileBackedTasksManager.getHistoryManager().add(fileBackedTasksManager
-                                .returnHistoryTask(integer, fileBackedTasksManager));
-                    }
+            }
+            if (line.length > 2) {
+                for (Integer integer : historyFromString(line[line.length - 1])) {
+                    fileBackedTasksManager.getHistoryManager().add(fileBackedTasksManager
+                            .returnHistoryTask(integer, fileBackedTasksManager));
                 }
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -200,10 +205,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         String[] partString = value.split(",");
         switch (whatTheTask) {
             case TASK:
-                CommonTask commonTask = new CommonTask(Integer.parseInt(partString[0]), partString[2], partString[4], Status.valueOf(partString[3]));
+                CommonTask commonTask = new CommonTask(Integer.parseInt(partString[0])
+                        , partString[2], partString[4], Status.valueOf(partString[3]), partString[5], partString[6]);
                 return commonTask;
             case SUBTASK:
-                Subtask subtask = new Subtask(Integer.parseInt(partString[0]), partString[2], partString[4], Status.valueOf(partString[3]), Integer.parseInt(partString[5]));
+                Subtask subtask = new Subtask(Integer.parseInt(partString[0]), partString[2], partString[4]
+                        , Status.valueOf(partString[3]), Integer.parseInt(partString[5]), partString[6], partString[7]);
                 return subtask;
             case EPIC:
                 Epic epicTask = new Epic(Integer.parseInt(partString[0]), partString[2], partString[4]);
@@ -236,38 +243,23 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     public static void main(String[] args) {
         CommonTask commonTask1 = new CommonTask("Сходить на почту"
-                , "получить поссылку из деревни", Status.IN_PROGRESS,"12:30","90");
+                , "получить поссылку из деревни"
+                , Status.IN_PROGRESS, "2022.10.23 14:30", "80");
         CommonTask commonTask2 = new CommonTask("Купить сыра", "пармезан для пасты"
-                , Status.IN_PROGRESS,"15:30","80");
+                , Status.IN_PROGRESS, "2022.10.23 13:30", "80");
 
         Epic epic1 = new Epic("Купить костюм на свадьбу"
                 , "Нужно собрать костюм на свадьбу друга");
         Epic epic2 = new Epic(2, "Купить костюм на свадьбу"
                 , "Нужно собрать костюм на свадьбу друга");
-        Subtask subtask1 = new Subtask("Купить обувь", "45 размер", Status.DONE, 3);
-        Subtask subtask2 = new Subtask(66, "Купить брюки с рубашкой"
-                , "Нужно собрать костюм на свадьбу друга", Status.NEW, 3);
+        Subtask subtask1 = new Subtask("Купить обувь", "45 размер"
+                , Status.DONE, 3, "2022.10.23 11:30", "80");
+        Subtask subtask2 = new Subtask("Купить брюки с рубашкой"
+                , "Нужно собрать костюм на свадьбу друга"
+                , Status.NEW, 3, "2022.10.23 15:30", "80");
         Subtask subtask3 = new Subtask("Купить букет жениху и невесте"
-                , "Нужно собрать костюм на свадьбу друга", Status.NEW, 3);
-//
-//
-        FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager();
-
-
-        fileBackedTasksManager.addCommonTask(commonTask1);
-        fileBackedTasksManager.addCommonTask(commonTask2);
-        fileBackedTasksManager.addEpicTask(epic1);
-        fileBackedTasksManager.addSubTask(subtask1);
-        fileBackedTasksManager.addSubTask(subtask2);
-        fileBackedTasksManager.addSubTask(subtask3);
-        fileBackedTasksManager.returnAllCommonTask();
-        fileBackedTasksManager.returnAllEpic();
-        fileBackedTasksManager.returnTaskById(5);
-        fileBackedTasksManager.returnTaskById(2);
-        System.out.println(fileBackedTasksManager.getHistory());
-        FileBackedTasksManager newFileBackedTasksManager = FileBackedTasksManager.loadFromFile("task.csv");
-        System.out.println(newFileBackedTasksManager.getHistory());
-
+                , "Нужно собрать костюм на свадьбу друга"
+                , Status.NEW, 3, "2022.10.23 04:30", "80");
 
     }
 }

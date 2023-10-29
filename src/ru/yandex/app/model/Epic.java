@@ -1,12 +1,11 @@
 package ru.yandex.app.model;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.DataFormatException;
 
 
 public class Epic extends AbstractTask {
@@ -32,33 +31,31 @@ public class Epic extends AbstractTask {
         return subtasksId;
     }
 
-    public void getEndTimeEpic() {
-//        Long durationAllSubTask = 0L;
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-        ArrayList<LocalTime> startTimeList = new ArrayList<>();
-        ArrayList<LocalTime> endTimeList = new ArrayList<>();
+    public String getEndTimeEpic() {
+        Long durationAllSubTask = 0L;
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
+        ArrayList<LocalDateTime> startTimeList = new ArrayList<>();
+        ArrayList<LocalDateTime> endTimeList = new ArrayList<>();
         for (Map.Entry<Integer, Subtask> subtask : subtaskInEpic.entrySet()) {
-            if (subtask.getValue().getStatusTask() != Status.DONE) {
-
-                LocalTime startTime = LocalTime.parse(subtask.getValue().getStartTime(), dateTimeFormatter);
-                startTimeList.add(startTime);
-                Long durationAtTask = Long.valueOf(subtask.getValue().getDuration());
-                LocalTime endTime = LocalTime.parse(subtask.getValue().getStartTime()
-                        , dateTimeFormatter).plusMinutes(durationAtTask);
-                endTimeList.add(endTime);
-                duration += durationAtTask;
-            }
+            LocalDateTime startTime = LocalDateTime.parse(subtask.getValue().getStartTime(), dateTimeFormatter);
+            startTimeList.add(startTime);
+            Long durationAtTask = Long.valueOf(subtask.getValue().getDuration());
+            LocalDateTime endTime = LocalDateTime.parse(subtask.getValue().getStartTime()
+                    , dateTimeFormatter).plusMinutes(durationAtTask);
+            endTimeList.add(endTime);
+            durationAllSubTask += durationAtTask;
         }
+        duration = String.valueOf(durationAllSubTask);
         Collections.sort(startTimeList);
         Collections.sort(endTimeList);
         startTime = startTimeList.get(0).format(dateTimeFormatter);
-        endTime = endTimeList.get(startTimeList.size()-1).format(dateTimeFormatter);
-        System.out.println(duration);
+        endTime = endTimeList.get(startTimeList.size() - 1).format(dateTimeFormatter);
+        return endTime;
     }
+
     @Override
-    public String getEndTime(){
-        getEndTimeEpic();
-        return null;
+    public String getEndTime() {
+        return getEndTimeEpic();
     }
 
     public HashMap<Integer, Subtask> getSubtaskInEpic() {

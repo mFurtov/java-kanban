@@ -2,15 +2,13 @@ package ru.yandex.app.service;
 
 import ru.yandex.app.model.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Epic> epicTaskMap = new HashMap<>();
     private HashMap<Integer, Subtask> subTaskMap = new HashMap<>();
     private HashMap<Integer, CommonTask> commonTaskMap = new HashMap<>();
+    private TreeSet<AbstractTask> prioritizedTasks = new TreeSet<>(new StartTaskComparator());
     private int nextId = 1;
 
 
@@ -19,6 +17,8 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void addCommonTask(CommonTask commonTask) {
         commonTask.setIdTask(generateNextID());
+        getPrioritizedTasks();
+        intersectionCheck(commonTask);
         commonTaskMap.put(commonTask.getIdTask(), commonTask);
     }
 
@@ -33,10 +33,12 @@ public class InMemoryTaskManager implements TaskManager {
     public void addSubTask(Subtask subtask) {
         if (subtask.getEpicId() != 0) {
             subtask.setIdTask(generateNextID());
+            getPrioritizedTasks();
+            intersectionCheck(subtask);
             subTaskMap.put(subtask.getIdTask(), subtask);
             Epic epic = epicTaskMap.get(subtask.getEpicId());
             epic.getSubtasksId().add(subtask.getIdTask());
-            epic.getSubtaskInEpic().put(subtask.getIdTask(),subtask);
+            epic.getSubtaskInEpic().put(subtask.getIdTask(), subtask);
             setEpicTaskStatus(epic);
         } else {
             System.out.println("Нужен номер эпика для " + subtask.getNameTask() + ", она не может быть ноль");
@@ -160,11 +162,15 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void updateCommonTask(CommonTask commonTask) {
+        getPrioritizedTasks();
+        intersectionCheck(commonTask);
         commonTaskMap.put(commonTask.getIdTask(), commonTask);
     }
 
     @Override
     public void updateSubtaskTask(Subtask subtask) {
+        getPrioritizedTasks();
+        intersectionCheck(subtask);
         subTaskMap.put(subtask.getIdTask(), subtask);
         Epic epic = epicTaskMap.get(subtask.getEpicId());
         setEpicTaskStatus(epic);
@@ -219,7 +225,27 @@ public class InMemoryTaskManager implements TaskManager {
         return historyManager.getHistory();
     }
 
-    public <T extends AbstractTask> void enumerationMap(HashMap<Integer, T> taskMap) {
+    @Override
+    public TreeSet<AbstractTask> getPrioritizedTasks() {
+        prioritizedTasks.addAll(subTaskMap.values());
+        prioritizedTasks.addAll(commonTaskMap.values());
+        return prioritizedTasks;
+    }
+
+
+    private void intersectionCheck(AbstractTask abstractTask) {
+        for (AbstractTask pt : prioritizedTasks) {
+            if (abstractTask.getStartTime() != pt.getStartTime()
+                    || abstractTask.getStartTime() == null || abstractTask.getIdTask()==pt.getIdTask()) {
+                continue;
+            } else {
+                throw new RuntimeException("Задача " + abstractTask.getIdTask() + " " + abstractTask.getNameTask()
+                        + " не может пересекаться по началу времени с " + pt.getIdTask() + " " + pt.getNameTask());
+            }
+        }
+    }
+
+    private <T extends AbstractTask> void enumerationMap(HashMap<Integer, T> taskMap) {
         for (Map.Entry<Integer, T> task : taskMap.entrySet()) {
             historyManager.add(task.getValue());
         }
