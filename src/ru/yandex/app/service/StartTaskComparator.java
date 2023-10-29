@@ -1,10 +1,10 @@
 package ru.yandex.app.service;
 
 import ru.yandex.app.model.AbstractTask;
-
+import java.util.Comparator;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
+
 
 public class StartTaskComparator implements Comparator<AbstractTask> {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
