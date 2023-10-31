@@ -1,5 +1,6 @@
 package ru.yandex.app.service;
 
+import org.junit.platform.commons.logging.Logger;
 import ru.yandex.app.model.*;
 
 import java.util.*;
@@ -8,7 +9,7 @@ public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, Epic> epicTaskMap = new HashMap<>();
     private HashMap<Integer, Subtask> subTaskMap = new HashMap<>();
     private HashMap<Integer, CommonTask> commonTaskMap = new HashMap<>();
-    private TreeSet<AbstractTask> prioritizedTasks = new TreeSet<>(new StartTaskComparator());
+    private TreeSet<Task> prioritizedTasks = new TreeSet<>(new StartTaskComparator());
     private int nextId = 1;
 
 
@@ -66,8 +67,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<AbstractTask> returnAllTask() {
-        ArrayList<AbstractTask> allTask = new ArrayList<>();
+    public ArrayList<Task> returnAllTask() {
+        ArrayList<Task> allTask = new ArrayList<>();
 
         for (Map.Entry<Integer, Epic> entry : epicTaskMap.entrySet()) {
             allTask.add(entry.getValue());
@@ -146,7 +147,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public AbstractTask returnTaskById(Integer id) {
+    public Task returnTaskById(Integer id) {
 
         if (subTaskMap.containsKey(id)) {
             historyManager.add(subTaskMap.get(id));
@@ -184,8 +185,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public ArrayList<AbstractTask> returnTaskByEpic(int id) {
-        ArrayList<AbstractTask> allSubTaskByEpic = new ArrayList<>();
+    public ArrayList<Task> returnTaskByEpic(int id) {
+        ArrayList<Task> allSubTaskByEpic = new ArrayList<>();
         Epic epic = epicTaskMap.get(id);
         for (Integer idSubtask : epic.getSubtasksId()) {
             allSubTaskByEpic.add(subTaskMap.get(idSubtask));
@@ -221,31 +222,31 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<AbstractTask> getHistory() {
+    public List<Task> getHistory() {
         return historyManager.getHistory();
     }
 
     @Override
-    public TreeSet<AbstractTask> getPrioritizedTasks() {
+    public TreeSet<Task> getPrioritizedTasks() {
         prioritizedTasks.addAll(subTaskMap.values());
         prioritizedTasks.addAll(commonTaskMap.values());
         return prioritizedTasks;
     }
 
 
-    private void intersectionCheck(AbstractTask abstractTask) {
-        for (AbstractTask pt : prioritizedTasks) {
-            if (abstractTask.getStartTime() != pt.getStartTime()
-                    || abstractTask.getStartTime() == null || abstractTask.getIdTask()==pt.getIdTask()) {
+    private void intersectionCheck(Task task) {
+        for (Task pt : prioritizedTasks) {
+            if (task.getStartTime() != pt.getStartTime()
+                    || task.getStartTime() == null || task.getIdTask()==pt.getIdTask()) {
                 continue;
             } else {
-                throw new RuntimeException("Задача " + abstractTask.getIdTask() + " " + abstractTask.getNameTask()
+                throw new RuntimeException("Задача " + task.getIdTask() + " " + task.getNameTask()
                         + " не может пересекаться по началу времени с " + pt.getIdTask() + " " + pt.getNameTask());
             }
         }
     }
 
-    private <T extends AbstractTask> void enumerationMap(HashMap<Integer, T> taskMap) {
+    private <T extends Task> void enumerationMap(HashMap<Integer, T> taskMap) {
         for (Map.Entry<Integer, T> task : taskMap.entrySet()) {
             historyManager.add(task.getValue());
         }

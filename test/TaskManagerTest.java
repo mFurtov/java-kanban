@@ -1,7 +1,6 @@
-package ru.yandex.app.service;
-
 import org.junit.jupiter.api.Test;
 import ru.yandex.app.model.*;
+import ru.yandex.app.service.TaskManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,7 +135,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @Test
     void returnAllTaskTest() {
         T taskManager = generateTaskManager();
-        ArrayList<AbstractTask> emptyList = taskManager.returnAllTask();
+        ArrayList<Task> emptyList = taskManager.returnAllTask();
         assertTrue(emptyList.isEmpty(), "Лист не пустой");
 
         Epic epicTask = new Epic("Test returnAllTaskTest"
@@ -148,7 +147,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
         CommonTask commonTask = new CommonTask("Test returnAllTaskTest"
                 , "Test returnAllTaskTest description", Status.NEW,"12:30","90");
         taskManager.addCommonTask(commonTask);
-        final ArrayList<AbstractTask> allTaskList = taskManager.returnAllTask();
+        final ArrayList<Task> allTaskList = taskManager.returnAllTask();
         assertFalse(allTaskList.isEmpty(), "Лист пустой");
         assertNotNull(allTaskList, "Задачи не возвращаются");
 
@@ -442,7 +441,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
                 , () -> taskManager.returnTaskByEpic(44)
                 , "При вызове задачи которая не в списке или задача с неверным id должен быть NPE");
 
-        final ArrayList<AbstractTask> subtaskList = taskManager.returnTaskByEpic(1);
+        final ArrayList<Task> subtaskList = taskManager.returnTaskByEpic(1);
         final List<Subtask> subtaskListBasic = List.of(subtaskOne, subtaskTwo);
         assertEquals(subtaskListBasic.get(0), subtaskList.get(0), "Задачи не равны");
         assertEquals(subtaskListBasic.get(1), subtaskList.get(1), "Задачи не равны");

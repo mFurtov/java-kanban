@@ -1,14 +1,10 @@
-package ru.yandex.app.service;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.app.model.AbstractTask;
 import ru.yandex.app.model.CommonTask;
 import ru.yandex.app.model.Epic;
 import ru.yandex.app.model.Status;
-
-import java.util.ArrayList;
-import java.util.List;
+import ru.yandex.app.service.HistoryManager;
+import ru.yandex.app.service.InMemoryHistoryManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 

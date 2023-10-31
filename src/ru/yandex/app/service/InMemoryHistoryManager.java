@@ -1,12 +1,12 @@
 package ru.yandex.app.service;
 
-import ru.yandex.app.model.AbstractTask;
+import ru.yandex.app.model.Task;
 
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private static final int MAX_LIST_SIZE = 10;
-    private ArrayList<AbstractTask> tasksHistoryList;
+    private ArrayList<Task> tasksHistoryList;
     private HashMap<Integer, Node> historyNode;
     private Node head;
     private Node tail;
@@ -20,7 +20,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
 
     @Override
-    public void add(AbstractTask task) {
+    public void add(Task task) {
         if (tasksHistoryList.size() < MAX_LIST_SIZE) {
             tasksHistoryList.add(task);
         } else {
@@ -31,7 +31,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         linkLast(task);
     }
 
-    private void linkLast(AbstractTask task) {
+    private void linkLast(Task task) {
 
 
         Node lastNode = tail;
@@ -83,9 +83,9 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     }
 
-    public List<AbstractTask> getHistory() {
-        ArrayList<AbstractTask> historyList = new ArrayList<>();
-        Node<AbstractTask> nowNode = tail;
+    public List<Task> getHistory() {
+        ArrayList<Task> historyList = new ArrayList<>();
+        Node<Task> nowNode = tail;
 
         int count = 0;
         while (nowNode != null && count < MAX_LIST_SIZE) {
@@ -112,12 +112,10 @@ public class InMemoryHistoryManager implements HistoryManager {
                 historyNode.clear();
                 tasksHistoryList.clear();
             }else if(nodeToRemove==tail){
-                Node tempTail = tail;
-                tempTail.data = tempTail.prev.data;
-                tempTail.prev=tail.prev.prev;
-                tempTail.next=null;
-
-                tail=tempTail;
+                tail = tail.prev;
+                if (tail != null) {
+                    tail.next = null;
+                }
             }
             else {
                 Node nodeToRemoveInList = historyNode.get(id);

@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class Epic extends AbstractTask {
+public class Epic extends Task {
     private final ArrayList<Integer> subtasksId = new ArrayList<>();
 
     private final HashMap<Integer, Subtask> subtaskInEpic = new HashMap<>();

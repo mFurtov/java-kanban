@@ -1,16 +1,16 @@
 package ru.yandex.app.service;
 
-import ru.yandex.app.model.AbstractTask;
+import ru.yandex.app.model.Task;
 import java.util.Comparator;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 
-public class StartTaskComparator implements Comparator<AbstractTask> {
+public class StartTaskComparator implements Comparator<Task> {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
 
     @Override
-    public int compare(AbstractTask o1, AbstractTask o2) {
+    public int compare(Task o1, Task o2) {
         if (o1.getStartTime() == null || o2.getStartTime()==null){
             return 1;
         }

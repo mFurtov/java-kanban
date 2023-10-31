@@ -3,7 +3,7 @@ package ru.yandex.app.model;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class AbstractTask {
+public class Task {
     protected int idTask;
     protected String nameTask;
     protected String descriptionTask;
@@ -11,18 +11,18 @@ public class AbstractTask {
     protected String duration;
     protected String startTime;
 
-    public AbstractTask(String nameTask, String descriptionTask) {
+    public Task(String nameTask, String descriptionTask) {
         this.nameTask = nameTask;
         this.descriptionTask = descriptionTask;
     }
 
-    public AbstractTask(int idTask, String nameTask, String descriptionTask) {
+    public Task(int idTask, String nameTask, String descriptionTask) {
         this.idTask = idTask;
         this.nameTask = nameTask;
         this.descriptionTask = descriptionTask;
     }
 
-    public AbstractTask(String nameTask, String descriptionTask, Status statusTask, String startTime, String duration) {
+    public Task(String nameTask, String descriptionTask, Status statusTask, String startTime, String duration) {
         this.nameTask = nameTask;
         this.descriptionTask = descriptionTask;
         this.duration = duration;

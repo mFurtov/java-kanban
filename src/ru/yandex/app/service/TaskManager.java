@@ -3,7 +3,7 @@ package ru.yandex.app.service;
 import ru.yandex.app.model.CommonTask;
 import ru.yandex.app.model.Epic;
 import ru.yandex.app.model.Subtask;
-import ru.yandex.app.model.AbstractTask;
+import ru.yandex.app.model.Task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +23,7 @@ public interface TaskManager {
 
     ArrayList<Subtask> returnAllSubtask();
 
-    ArrayList<AbstractTask> returnAllTask();
+    ArrayList<Task> returnAllTask();
 
     void removeEpic(int id);
 
@@ -37,7 +37,7 @@ public interface TaskManager {
 
     void removeAllCommonTask();
 
-    AbstractTask returnTaskById(Integer id);
+    Task returnTaskById(Integer id);
 
     void updateCommonTask(CommonTask commonTask);
 
@@ -45,12 +45,12 @@ public interface TaskManager {
 
     void updateEpicCommonTask(Epic epic);
 
-    ArrayList<AbstractTask> returnTaskByEpic(int id);
+    ArrayList<Task> returnTaskByEpic(int id);
 
     void setEpicTaskStatus(Epic epicTask);
 
-    List<AbstractTask> getHistory();
+    List<Task> getHistory();
 
-    TreeSet<AbstractTask> getPrioritizedTasks();
+    TreeSet<Task> getPrioritizedTasks();
 
 }

@@ -1,6 +1,7 @@
-package ru.yandex.app.model;
-
 import org.junit.jupiter.api.Test;
+import ru.yandex.app.model.Epic;
+import ru.yandex.app.model.Status;
+import ru.yandex.app.model.Subtask;
 import ru.yandex.app.service.InMemoryTaskManager;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class EpicTest {
 
-    InMemoryTaskManager taskManager = new InMemoryTaskManager();
+    private InMemoryTaskManager taskManager = new InMemoryTaskManager();
 
     @Test
     void emptyTaskListTest() {
