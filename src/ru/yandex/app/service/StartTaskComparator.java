@@ -1,12 +1,14 @@
 package ru.yandex.app.service;
 
 import ru.yandex.app.model.Task;
+
+import java.io.Serializable;
 import java.util.Comparator;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 
-public class StartTaskComparator implements Comparator<Task> {
+public class StartTaskComparator implements Comparator<Task>, Serializable {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
 
     @Override

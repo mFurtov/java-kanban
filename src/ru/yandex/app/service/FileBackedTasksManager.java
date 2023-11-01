@@ -218,13 +218,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         String[] partString = value.split(",");
         switch (whatTheTask) {
             case TASK:
-                CommonTask commonTask = new CommonTask(Integer.parseInt(partString[0])
+                return new CommonTask(Integer.parseInt(partString[0])
                         , partString[2], partString[4], Status.valueOf(partString[3]), partString[5], partString[6]);
-                return commonTask;
             case SUBTASK:
-                Subtask subtask = new Subtask(Integer.parseInt(partString[0]), partString[2], partString[4]
+               return new Subtask(Integer.parseInt(partString[0]), partString[2], partString[4]
                         , Status.valueOf(partString[3]), Integer.parseInt(partString[5]), partString[6], partString[7]);
-                return subtask;
+
             case EPIC:
                 Epic epicTask = new Epic(Integer.parseInt(partString[0]), partString[2], partString[4]);
                 epicTask.setStatusTask(Status.valueOf(partString[3]));

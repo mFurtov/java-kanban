@@ -1,6 +1,7 @@
 package ru.yandex.app.service;
 
 import org.junit.platform.commons.logging.Logger;
+import org.junit.platform.commons.logging.LoggerFactory;
 import ru.yandex.app.model.*;
 
 import java.util.*;
@@ -11,6 +12,7 @@ public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, CommonTask> commonTaskMap = new HashMap<>();
     private TreeSet<Task> prioritizedTasks = new TreeSet<>(new StartTaskComparator());
     private int nextId = 1;
+    private static final Logger logger = LoggerFactory.getLogger(InMemoryTaskManager.class);
 
 
     private HistoryManager historyManager = Managers.getDefaultHistory();
@@ -202,7 +204,7 @@ public class InMemoryTaskManager implements TaskManager {
         int countSubtaskInEpic = epicTask.getSubtasksId().size();
         for (Integer subtaskId : epicTask.getSubtasksId()) {
             String status = String.valueOf(subTaskMap.get(subtaskId).getStatusTask());
-            if (status.equalsIgnoreCase("done")) {
+            if ("done".equalsIgnoreCase(status)) {//status.equalsIgnoreCase("done")
                 countDone++;
             } else if (status.equalsIgnoreCase("new")) {
                 countNew++;
@@ -238,7 +240,6 @@ public class InMemoryTaskManager implements TaskManager {
         for (Task pt : prioritizedTasks) {
             if (task.getStartTime() != pt.getStartTime()
                     || task.getStartTime() == null || task.getIdTask()==pt.getIdTask()) {
-                continue;
             } else {
                 throw new RuntimeException("Задача " + task.getIdTask() + " " + task.getNameTask()
                         + " не может пересекаться по началу времени с " + pt.getIdTask() + " " + pt.getNameTask());

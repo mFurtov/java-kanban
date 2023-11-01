@@ -11,6 +11,9 @@ public class Task {
     protected String duration;
     protected String startTime;
 
+    private Task(){
+
+    }
     public Task(String nameTask, String descriptionTask) {
         this.nameTask = nameTask;
         this.descriptionTask = descriptionTask;
