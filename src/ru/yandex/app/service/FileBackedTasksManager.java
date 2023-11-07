@@ -276,6 +276,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager();
         fileBackedTasksManager.addEpicTask(epic1);
         fileBackedTasksManager.addSubTask(subtask1);
+        System.out.println(fileBackedTasksManager.returnAllTask());
 
         FileBackedTasksManager newFileBackedTasksManager = fileBackedTasksManager.loadFromFile("task.csv");
         System.out.println(newFileBackedTasksManager.returnAllTask());

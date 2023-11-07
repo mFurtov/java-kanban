@@ -1,7 +1,5 @@
 package ru.yandex.app.service;
 
-import org.junit.platform.commons.logging.Logger;
-import org.junit.platform.commons.logging.LoggerFactory;
 import ru.yandex.app.model.*;
 
 import java.util.*;
@@ -12,7 +10,6 @@ public class InMemoryTaskManager implements TaskManager {
     private HashMap<Integer, CommonTask> commonTaskMap = new HashMap<>();
     private TreeSet<Task> prioritizedTasks = new TreeSet<>(new StartTaskComparator());
     private int nextId = 1;
-    private static final Logger logger = LoggerFactory.getLogger(InMemoryTaskManager.class);
 
 
     private HistoryManager historyManager = Managers.getDefaultHistory();

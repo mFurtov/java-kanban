@@ -31,6 +31,7 @@ public class Epic extends Task {
         return subtasksId;
     }
 
+
     public String getEndTimeEpic() {
         Long durationAllSubTask = 0L;
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
