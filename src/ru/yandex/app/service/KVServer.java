@@ -29,7 +29,37 @@ public class KVServer {
 
     private void load(HttpExchange h) {
         // TODO Добавьте получение значения по ключу
+        try {
+            System.out.println("\n/load");
+            if (!hasAuth(h)) {
+                System.out.println("Запрос неавторизован, нужен параметр в query API_TOKEN со значением апи-ключа");
+                h.sendResponseHeaders(403, 0);
+                return;
+            }
+            if ("GET".equals(h.getRequestMethod())) {
+                String key = h.getRequestURI().getPath().substring("/load/".length());
+                if (key.isEmpty()) {
+                    System.out.println("Key для загрузки пустой. key указывается в пути: /load/{key}");
+                    h.sendResponseHeaders(400, 0);
+                    return;
+                }
+                String value = data.get(key);
+                if (value != null) {
+                    sendText(h, value);
+                    System.out.println("Значение для ключа " + key + " успешно отправлено");
+                    h.sendResponseHeaders(200, 0);
+                } else {
+                    System.out.println("Значение для ключа " + key + " не найдено");
+                    h.sendResponseHeaders(404, 0);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            h.close();
+        }
     }
+
 
     private void save(HttpExchange h) throws IOException {
         try {

@@ -13,8 +13,7 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.net.InetSocketAddress;
 import java.net.URI;
-import java.time.Duration;
-import java.util.regex.Pattern;
+
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -32,8 +31,7 @@ public class HttpTaskServer {
 
         addT();//удалить для теста
         gson = createGson();
-//        GsonBuilder gsonBuilder = new GsonBuilder();
-//        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdaper)
+
 
     }
 
@@ -257,7 +255,6 @@ public class HttpTaskServer {
         }
         if ("task".equalsIgnoreCase(pathPart[2]) && query != null) {
             int numberTask = parseTaskId(query.split("=")[1]);
-            ;
             if (numberTask != -1) {
                 taskManager.removeCommonTask(numberTask);
                 System.out.println("Удалена задача под номером: " + numberTask);
@@ -270,7 +267,6 @@ public class HttpTaskServer {
         }
         if ("subtask".equalsIgnoreCase(pathPart[2]) && query != null) {
             int numberTask = parseTaskId(query.split("=")[1]);
-            ;
             if (numberTask != -1) {
                 try {
                     taskManager.removeSubtask(numberTask);
