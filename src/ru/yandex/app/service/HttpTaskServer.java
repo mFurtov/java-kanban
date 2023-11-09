@@ -316,6 +316,7 @@ public class HttpTaskServer {
         }
     }
 
+
     public void start() {
         System.out.println("Запускаем сервер на порту " + PORT);
         System.out.println("Открой в браузере http://localhost:" + PORT + "/");
@@ -378,10 +379,17 @@ public class HttpTaskServer {
     }
 //    private Status getStatus(St)
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
+        KVServer server1 = new KVServer();
+        server1.start();
 
         HttpTaskServer server = new HttpTaskServer();
+
+
+        KVTaskClient kvTaskClient = new KVTaskClient("http://localhost:8078");
+
         server.start();
+
 //        server.stop();
     }
 
@@ -402,7 +410,7 @@ public class HttpTaskServer {
                 , Status.NEW, 1, "2022.10.23 15:30", "80");
         taskManager.addSubTask(subtask2);
         taskManager.addCommonTask(commonTask1);
-        taskManager.addCommonTask(commonTask2);
+//        taskManager.addCommonTask(commonTask2);
 
     }
 
