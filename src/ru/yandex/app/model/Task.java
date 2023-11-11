@@ -2,6 +2,7 @@ package ru.yandex.app.model;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class Task {
     protected int idTask;
@@ -11,9 +12,10 @@ public class Task {
     protected String duration;
     protected String startTime;
 
-    private Task(){
+    private Task() {
 
     }
+
     public Task(String nameTask, String descriptionTask) {
         this.nameTask = nameTask;
         this.descriptionTask = descriptionTask;
@@ -80,4 +82,18 @@ public class Task {
         return startTimeAtTask.format(dateTimeFormatter);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Task)) return false;
+        Task task = (Task) o;
+        return idTask == task.idTask && Objects.equals(nameTask, task.nameTask)
+                && Objects.equals(descriptionTask, task.descriptionTask) && statusTask == task.statusTask
+                && Objects.equals(duration, task.duration) && Objects.equals(startTime, task.startTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idTask, nameTask, descriptionTask, statusTask, duration, startTime);
+    }
 }

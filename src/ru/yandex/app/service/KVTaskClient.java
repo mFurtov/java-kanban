@@ -48,6 +48,15 @@ public class KVTaskClient {
         }
     }
     public String load(String key){
-
+        URI urlReg = URI.create(url + "/load/"+key+"?API_TOKEN="+apiToken);
+        HttpRequest request = HttpRequest.newBuilder().uri(urlReg).GET().build();
+        HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
+        HttpResponse<String> response = null;
+        try {
+            response = client.send(request, handler);
+        } catch (IOException | InterruptedException e) {
+            System.out.println("Ошибка при регистрации на сервере KV");
+        }
+        return response.body();
     }
 }

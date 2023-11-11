@@ -151,7 +151,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             String[] line = fileLine.split("\n");
             int fileContainsSomething = 2;
             if (line.length >= fileContainsSomething) {
-                loadTask(fileBackedTasksManager,line);
+                loadTask(fileBackedTasksManager, line);
             }
             loadHistory(fileBackedTasksManager, line);
 
@@ -221,7 +221,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 return new CommonTask(Integer.parseInt(partString[0])
                         , partString[2], partString[4], Status.valueOf(partString[3]), partString[5], partString[6]);
             case SUBTASK:
-               return new Subtask(Integer.parseInt(partString[0]), partString[2], partString[4]
+                return new Subtask(Integer.parseInt(partString[0]), partString[2], partString[4]
                         , Status.valueOf(partString[3]), Integer.parseInt(partString[5]), partString[6], partString[7]);
 
             case EPIC:
@@ -268,19 +268,19 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                 , Status.DONE, 1, "2022.10.23 11:30", "80");
         Subtask subtask2 = new Subtask("Купить брюки с рубашкой"
                 , "Нужно собрать костюм на свадьбу друга"
-                , Status.NEW, 3, "2022.10.23 15:30", "80");
+                , Status.NEW, 2, "2022.10.23 15:30", "80");
         Subtask subtask3 = new Subtask("Купить букет жениху и невесте"
                 , "Нужно собрать костюм на свадьбу друга"
-                , Status.NEW, 3, "2022.10.23 04:30", "80");
+                , Status.NEW, 2, "2022.10.23 04:30", "80");
 
         FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager();
         fileBackedTasksManager.addEpicTask(epic1);
+        fileBackedTasksManager.addEpicTask(epic2);
         fileBackedTasksManager.addSubTask(subtask1);
+        fileBackedTasksManager.addSubTask(subtask2);
+        fileBackedTasksManager.getPrioritizedTasks();
         System.out.println(fileBackedTasksManager.returnAllTask());
-
-        FileBackedTasksManager newFileBackedTasksManager = fileBackedTasksManager.loadFromFile("task.csv");
-        System.out.println(newFileBackedTasksManager.returnAllTask());
-
+        System.out.println(fileBackedTasksManager.getPrioritizedTasks());
     }
 
 }

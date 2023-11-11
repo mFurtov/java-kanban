@@ -1,28 +1,19 @@
 package ru.yandex.app.service;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializer;
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import ru.yandex.app.model.*;
-
-
-import java.io.FileWriter;
-import java.io.IOException;
-
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.lang.reflect.Type;
 import java.util.*;
 
 public class HttpTaskManager extends FileBackedTasksManager {
-    KVTaskClient client;
-    Gson gson;
+    private KVTaskClient client;
+    private Gson gson;
+    private String url = "http://localhost:8078";
 
-    public HttpTaskManager(String url) {
+    public HttpTaskManager() {
         client = new KVTaskClient(url);
-        gson = createGson();
+        gson = Managers.getDefaultGson();
     }
 
     public void addCommonTask(CommonTask commonTask) {
@@ -123,13 +114,13 @@ public class HttpTaskManager extends FileBackedTasksManager {
         return taskByEpic;
     }
 
+    @Override
     public void save() {
         ArrayList<Task> allTask = inGeneralList();
         ArrayList<Task> epicList = new ArrayList<>();
         ArrayList<Task> subtaskList = new ArrayList<>();
         ArrayList<Task> commonTaskList = new ArrayList<>();
-
-
+        ArrayList<Integer> history = new ArrayList<>();
         for (Task task : allTask) {
             if (task instanceof Epic) {
                 epicList.add(task);
@@ -137,11 +128,17 @@ public class HttpTaskManager extends FileBackedTasksManager {
                 commonTaskList.add(task);
             } else if (task instanceof Subtask) {
                 subtaskList.add(task);
+            } else {
+                System.out.println("Задача " + task + " не соответствует ни одному типу");
             }
         }
-        client.put("epic", gson.toJson(epicList));
-        client.put("task", gson.toJson(subtaskList));
-        client.put("subtask", gson.toJson(commonTaskList));
+        if (!epicList.isEmpty()) client.put("epic", gson.toJson(epicList));
+        if (!subtaskList.isEmpty()) client.put("subtask", gson.toJson(subtaskList));
+        if (!commonTaskList.isEmpty()) client.put("task", gson.toJson(commonTaskList));
+        for (Task task : getHistory()) {
+            history.add(task.getIdTask());
+        }
+        if (!history.isEmpty()) client.put("history", gson.toJson(history));
     }
 
     private ArrayList<Task> inGeneralList() {
@@ -159,183 +156,50 @@ public class HttpTaskManager extends FileBackedTasksManager {
         return generalList;
     }
 
-    private Gson createGson() {
-        return new GsonBuilder().setPrettyPrinting()
-                .registerTypeAdapter(Epic.class, (JsonSerializer<Epic>) (epic, type, jsonSerializationContext) -> {
-                    JsonObject jsonObject = new JsonObject();
-                    jsonObject.addProperty("Type", String.valueOf(TypeTask.EPIC));
-                    jsonObject.addProperty("idTask", epic.getIdTask());
-                    jsonObject.addProperty("nameTask", epic.getNameTask());
-                    jsonObject.addProperty("descriptionTask", epic.getDescriptionTask());
-                    jsonObject.addProperty("subtasksId", String.valueOf(epic.getSubtasksId()));
-                    jsonObject.addProperty("statusTask", String.valueOf(epic.getStatusTask()));
-                    jsonObject.addProperty("startTime", epic.getStartTime());
-                    jsonObject.addProperty("duration", epic.getDuration());
-                    return jsonObject;
-                })
-                .registerTypeAdapter(Subtask.class, (JsonSerializer<Subtask>) (subtask, type, jsonSerializationContext) -> {
-                    JsonObject jsonObject = new JsonObject();
-                    jsonObject.addProperty("Type", String.valueOf(TypeTask.SUBTASK));
-                    jsonObject.addProperty("idTask", subtask.getIdTask());
-                    jsonObject.addProperty("nameTask", subtask.getNameTask());
-                    jsonObject.addProperty("descriptionTask", subtask.getDescriptionTask());
-                    jsonObject.addProperty("epicId", String.valueOf(subtask.getEpicId()));
-                    jsonObject.addProperty("statusTask", String.valueOf(subtask.getStatusTask()));
-                    jsonObject.addProperty("startTime", subtask.getStartTime());
-                    jsonObject.addProperty("duration", subtask.getDuration());
-                    return jsonObject;
-                })
-                .registerTypeAdapter(CommonTask.class, (JsonSerializer<CommonTask>) (commonTask, type, jsonSerializationContext) -> {
-                    JsonObject jsonObject = new JsonObject();
-                    jsonObject.addProperty("Type: ", String.valueOf(TypeTask.TASK));
-                    jsonObject.addProperty("idTask: ", commonTask.getIdTask());
-                    jsonObject.addProperty("nameTask: ", commonTask.getNameTask());
-                    jsonObject.addProperty("descriptionTask: ", commonTask.getDescriptionTask());
-                    jsonObject.addProperty("statusTask: ", String.valueOf(commonTask.getStatusTask()));
-                    jsonObject.addProperty("startTime: ", commonTask.getStartTime());
-                    jsonObject.addProperty("duration: ", commonTask.getDuration());
-                    return jsonObject;
-                }).create();
-    }
 
-    public static HttpTaskManager loadFromServer(String url) {
-        HttpTaskManager httpTaskManager = new HttpTaskManager(url);
-        FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager();
-        try {
-            String fileLine = Files.readString(Path.of(file));
-            String[] line = fileLine.split("\n");
-            int fileContainsSomething = 2;
-            if (line.length >= fileContainsSomething) {
-                loadTask(fileBackedTasksManager, line);
-            }
-            loadHistory(fileBackedTasksManager, line);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void loadFromServer(String url) {
+        Type epicListType = new TypeToken<List<Epic>>() {
+        }.getType();
+        String epicJson = (client.load("epic"));
+        List<Epic> epicList = gson.fromJson(epicJson, epicListType);
+        for (Epic epic : epicList) {
+            addEpicTask(epic);
         }
 
-
-        return fileBackedTasksManager;
+        Type subTaskType = new TypeToken<List<Subtask>>() {
+        }.getType();
+        String subtaskJson = (client.load("subtask"));
+        List<Subtask> subtaskList = gson.fromJson(subtaskJson, subTaskType);
+        for (Subtask subTask : subtaskList) {
+            addSubTask(subTask);
+        }
+        Type commonTaskType = new TypeToken<List<CommonTask>>() {
+        }.getType();
+        String taskJson = (client.load("task"));
+        List<CommonTask> commonTaskList = gson.fromJson(taskJson, commonTaskType);
+        for (CommonTask commonTask : commonTaskList) {
+            addCommonTask(commonTask);
+        }
+        String historyJson = (client.load("history"));
+        Type listType = new TypeToken<List<Integer>>() {
+        }.getType();
+        List<Integer> historyList = new Gson().fromJson(historyJson, listType);
+        for (Integer integer : historyList) {
+            getHistoryManager().add(returnHistoryTask(integer));
+        }
     }
 
-    private static void loadTask(FileBackedTasksManager fileBackedTasksManager, String[] line) {
-//        for (int i = 1; i < line.length; i++) {
-//            if (!line[i].trim().isEmpty()) {
-//                Task task = fileBackedTasksManager.fromString(line[i]);
-//                if (task instanceof Epic) {
-//                    HashMap<Integer, Epic> epicTaskMap = fileBackedTasksManager.getEpicTaskMap();
-//                    epicTaskMap.put(task.getIdTask(), (Epic) task);
-//                } else if (task instanceof Subtask) {
-//                    HashMap<Integer, Subtask> subTaskMap = fileBackedTasksManager.getSubTaskMap();
-//                    subTaskMap.put(task.getIdTask(), (Subtask) task);
-//                } else if (task instanceof CommonTask) {
-//                    HashMap<Integer, CommonTask> commonTaskMap = fileBackedTasksManager.getCommonTaskMap();
-//                    commonTaskMap.put(task.getIdTask(), (CommonTask) task);
-//                } else {
-//                    throw new IllegalArgumentException("Необходимо проверить файл, у одной из указанных задач не верный тип");
-//                }
-//            } else {
-//                break;
-//            }
-//        }
-    }
-
-
-    private static void loadHistory(FileBackedTasksManager fbt, String[] line) {
-//        int fileContainsSomethingAndHistory = 2;
-//        if (line.length > fileContainsSomethingAndHistory
-//                && line[line.length - 2].trim().isEmpty()) {
-//            for (Integer integer : historyFromString(line[line.length - 1])) {
-//                fbt.getHistoryManager().add(fbt.returnHistoryTask(integer, fbt));
-//            }
-//        } else {
-//            return;
-//        }
-    }
-
-    private Task returnHistoryTask(Integer number, FileBackedTasksManager fbtm) {
-        HashMap<Integer, CommonTask> commonTaskHashMap = fbtm.getCommonTaskMap();
-        HashMap<Integer, Subtask> subtaskHashMap = fbtm.getSubTaskMap();
-        HashMap<Integer, Epic> epicHashMap = fbtm.getEpicTaskMap();
-        if (commonTaskHashMap.containsKey(number)) {
-            return commonTaskHashMap.get(number);
-        } else if (subtaskHashMap.containsKey(number)) {
-            return subtaskHashMap.get(number);
+    private Task returnHistoryTask(Integer numbers) {
+        HashMap<Integer, CommonTask> commonTaskHashMap = getCommonTaskMap();
+        HashMap<Integer, Subtask> subtaskHashMap = getSubTaskMap();
+        HashMap<Integer, Epic> epicHashMap = getEpicTaskMap();
+        if (commonTaskHashMap.containsKey(numbers)) {
+            return commonTaskHashMap.get(numbers);
+        } else if (subtaskHashMap.containsKey(numbers)) {
+            return subtaskHashMap.get(numbers);
         } else {
-            return epicHashMap.get(number);
+            return epicHashMap.get(numbers);
         }
-    }
-
-    private Task fromString(String value) {
-        int firstComma = value.indexOf(",") + 1;
-        int secondComma = value.indexOf(",", firstComma);
-        TypeTask whatTheTask = TypeTask.valueOf(value.substring(firstComma, secondComma));
-        String[] partString = value.split(",");
-        switch (whatTheTask) {
-            case TASK:
-                return new CommonTask(Integer.parseInt(partString[0])
-                        , partString[2], partString[4], Status.valueOf(partString[3]), partString[5], partString[6]);
-            case SUBTASK:
-                return new Subtask(Integer.parseInt(partString[0]), partString[2], partString[4]
-                        , Status.valueOf(partString[3]), Integer.parseInt(partString[5]), partString[6], partString[7]);
-
-            case EPIC:
-                Epic epicTask = new Epic(Integer.parseInt(partString[0]), partString[2], partString[4]);
-                epicTask.setStatusTask(Status.valueOf(partString[3]));
-                return epicTask;
-            default:
-                return null;
-        }
-    }
-
-    static List<Integer> historyFromString(String value) {
-        String[] valueArray = value.split(",");
-        List<Integer> list = new ArrayList<>();
-
-        for (String s : valueArray) {
-            list.add(Integer.parseInt(s));
-        }
-        Collections.reverse(list);
-        return list;
-    }
-
-    private static String historyToString(HistoryManager manager) {
-        ArrayList<String> history = new ArrayList<>();
-
-        for (Task task : manager.getHistory()) {
-            history.add(Integer.toString(task.getIdTask()));
-        }
-        return String.join(",", history);
-    }
-
-    public static void main(String[] args) {
-        CommonTask commonTask1 = new CommonTask("Сходить на почту"
-                , "получить поссылку из деревни"
-                , Status.IN_PROGRESS, "2022.10.23 14:30", "80");
-        CommonTask commonTask2 = new CommonTask("Купить сыра", "пармезан для пасты"
-                , Status.IN_PROGRESS, "2022.10.23 13:30", "80");
-
-        Epic epic1 = new Epic("Купить костюм на свадьбу"
-                , "Нужно собрать костюм на свадьбу друга");
-        Epic epic2 = new Epic(2, "Купить костюм на свадьбу"
-                , "Нужно собрать костюм на свадьбу друга");
-        Subtask subtask1 = new Subtask("Купить обувь", "45 размер"
-                , Status.DONE, 1, "2022.10.23 11:30", "80");
-        Subtask subtask2 = new Subtask("Купить брюки с рубашкой"
-                , "Нужно собрать костюм на свадьбу друга"
-                , Status.NEW, 3, "2022.10.23 15:30", "80");
-        Subtask subtask3 = new Subtask("Купить букет жениху и невесте"
-                , "Нужно собрать костюм на свадьбу друга"
-                , Status.NEW, 3, "2022.10.23 04:30", "80");
-
-        FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager();
-        fileBackedTasksManager.addEpicTask(epic1);
-        fileBackedTasksManager.addSubTask(subtask1);
-        System.out.println(fileBackedTasksManager.returnAllTask());
-
-        FileBackedTasksManager newFileBackedTasksManager = fileBackedTasksManager.loadFromFile("task.csv");
-        System.out.println(newFileBackedTasksManager.returnAllTask());
-
     }
 
 }
