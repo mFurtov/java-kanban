@@ -18,6 +18,8 @@ public class HttpTaskServer {
     private static final int PORT = 8080;
     private HttpServer server;
     private Gson gson;
+    private static final int METHODNOTALLOWEDCODE = 405;
+    private static final int OKCODE = 200;
 
 
     public TaskManager getTaskManager() {
@@ -66,11 +68,11 @@ public class HttpTaskServer {
                 }
                 default: {
                     System.out.println("Ждем корректный метод");
-                    httpExchange.sendResponseHeaders(405, 0);
+                    httpExchange.sendResponseHeaders(METHODNOTALLOWEDCODE, 0);
                 }
             }
 
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             httpExchange.close();
@@ -81,13 +83,6 @@ public class HttpTaskServer {
         URI uri = httpExchange.getRequestURI();
         String query = uri.getQuery();
         try {
-            if (pathPart.length == 2 && "tasks".equalsIgnoreCase(pathPart[1])
-                    && query == null) {
-                String response = gson.toJson(taskManager.getPrioritizedTasks());
-                sendText(httpExchange, response);
-                System.out.println("Все задачи выведены");
-                return;
-            }
             if (pathPart.length == 3 && "history".equalsIgnoreCase(pathPart[2])
                     && query == null) {
                 String response = gson.toJson(taskManager.getHistory());
@@ -96,11 +91,8 @@ public class HttpTaskServer {
                 return;
             }
 
-            if (pathPart.length == 3 && "epic".equalsIgnoreCase(pathPart[2])
-                    && query == null) {
-                String response = gson.toJson(taskManager.returnAllEpic());
-                sendText(httpExchange, response);
-                System.out.println("Все эпики выведены");
+            if (pathPart.length == 3 && "epic".equalsIgnoreCase(pathPart[2])) {
+                getEpic(query, httpExchange);
                 return;
             }
             if (pathPart.length == 3 && "task".equalsIgnoreCase(pathPart[2])
@@ -117,53 +109,76 @@ public class HttpTaskServer {
                 return;
             }
             if (pathPart.length == 2 && "tasks".equalsIgnoreCase(pathPart[1])) {
-                int idTask = parseTaskId(query.split("=")[1]);
-                String response;
-                try {
-                    response = gson.toJson(taskManager.returnTaskById(idTask));
-                } catch (NullPointerException e) {
-                    System.out.println("Такой задачи нет: " + idTask);
-                    httpExchange.sendResponseHeaders(405, 0);
-                    return;
-                }
-                if (idTask != -1) {
-                    System.out.println("Выведена задача под номером: " + idTask);
-                    sendText(httpExchange, response);
-                    return;
-                } else {
-                    System.out.println("Некорректный id: " + idTask);
-                    httpExchange.sendResponseHeaders(405, 0);
-                }
-            }
-            if (pathPart.length == 3 && "epic".equalsIgnoreCase(pathPart[2])) {
-                int idEpic = parseTaskId(query.split("=")[1]);
-                String response;
-                try {
-                    response = gson.toJson(taskManager.returnTaskByEpic(idEpic));
-                } catch (NullPointerException e) {
-                    System.out.println("Такой задачи нет: " + idEpic);
-                    httpExchange.sendResponseHeaders(405, 0);
-                    return;
-                }
-                if (idEpic != -1) {
-                    System.out.println("Выведены подзадачи  эпика под номером: " + idEpic);
-                    JsonElement jsonElement = gson.toJsonTree(taskManager.returnTaskByEpic(idEpic));
-                    if (jsonElement.isJsonArray() && jsonElement.getAsJsonArray().size() == 0) {
-                        sendText(httpExchange, "У эпика нет подзадач");
-
-                    } else {
-                        sendText(httpExchange, response);
-                    }
-                } else {
-                    System.out.println("Некорректный id: " + idEpic);
-                    httpExchange.sendResponseHeaders(405, 0);
-                }
+                getTasks(query, httpExchange);
+                return;
             } else {
-                httpExchange.sendResponseHeaders(405, 0);
+                httpExchange.sendResponseHeaders(METHODNOTALLOWEDCODE, 0);
 
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void getTasks(String query, HttpExchange httpExchange) throws IOException {
+        if (query == null) {
+            String response = gson.toJson(taskManager.getPrioritizedTasks());
+            sendText(httpExchange, response);
+            System.out.println("Все задачи выведены");
+            return;
+        }
+        if (query != null) {
+            int idTask = parseTaskId(query.split("=")[1]);
+            String response;
+            int taskDoesntExist = 1;
+            if (taskManager.returnTaskById(idTask).getIdTask() == taskDoesntExist) {
+                System.out.println("Такой задачи нет: " + idTask);
+                httpExchange.sendResponseHeaders(METHODNOTALLOWEDCODE, 0);
+                return;
+            } else {
+                response = gson.toJson(taskManager.returnTaskById(idTask));
+            }
+            if (idTask != -1) {
+                System.out.println("Выведена задача под номером: " + idTask);
+                sendText(httpExchange, response);
+                return;
+            } else {
+                System.out.println("Некорректный id: " + idTask);
+                httpExchange.sendResponseHeaders(METHODNOTALLOWEDCODE, 0);
+            }
+        }
+    }
+
+    private void getEpic(String query, HttpExchange httpExchange) throws IOException {
+        if (query != null) {
+            int idEpic = parseTaskId(query.split("=")[1]);
+            String response;
+            try {
+                response = gson.toJson(taskManager.returnTaskByEpic(idEpic));
+            } catch (NullPointerException e) {
+                System.out.println("Такой задачи нет: " + idEpic);
+                httpExchange.sendResponseHeaders(METHODNOTALLOWEDCODE, 0);
+                return;
+            }
+            if (idEpic != -1) {
+                System.out.println("Выведены подзадачи  эпика под номером: " + idEpic);
+                JsonElement jsonElement = gson.toJsonTree(taskManager.returnTaskByEpic(idEpic));
+                if (jsonElement.isJsonArray() && jsonElement.getAsJsonArray().size() == 0) {
+                    sendText(httpExchange, "У эпика нет подзадач");
+
+                } else {
+                    sendText(httpExchange, response);
+                }
+            } else {
+                System.out.println("Некорректный id: " + idEpic);
+                httpExchange.sendResponseHeaders(METHODNOTALLOWEDCODE, 0);
+            }
+        }
+        if (query == null) {
+            String response = gson.toJson(taskManager.returnAllEpic());
+            sendText(httpExchange, response);
+            System.out.println("Все эпики выведены");
+            return;
         }
     }
 
@@ -189,7 +204,7 @@ public class HttpTaskServer {
                         sendText(httpExchange, "Эпик добавлен");
                     }
                 } catch (Exception e) {
-                    httpExchange.sendResponseHeaders(405, 0);
+                    httpExchange.sendResponseHeaders(METHODNOTALLOWEDCODE, 0);
                     e.printStackTrace();
                 }
                 return;
@@ -220,7 +235,7 @@ public class HttpTaskServer {
                         sendText(httpExchange, "Обычная задача добавлена");
                     }
                 } catch (Exception e) {
-                    httpExchange.sendResponseHeaders(405, 0);
+                    httpExchange.sendResponseHeaders(METHODNOTALLOWEDCODE, 0);
                     e.printStackTrace();
                 }
                 return;
@@ -244,11 +259,11 @@ public class HttpTaskServer {
                         sendText(httpExchange, "Подзадача добавлена");
                     }
                 } catch (Exception e) {
-                    httpExchange.sendResponseHeaders(405, 0);
+                    httpExchange.sendResponseHeaders(METHODNOTALLOWEDCODE, 0);
                     e.printStackTrace();
                 }
             } else {
-                httpExchange.sendResponseHeaders(405, 0);
+                httpExchange.sendResponseHeaders(METHODNOTALLOWEDCODE, 0);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -269,12 +284,12 @@ public class HttpTaskServer {
                         return;
                     } catch (NullPointerException e) {
                         System.out.println("Эпик невозможно удалить так как эпика под таким id нет: " + numberTask);
-                        httpExchange.sendResponseHeaders(405, 0);
+                        httpExchange.sendResponseHeaders(METHODNOTALLOWEDCODE, 0);
                     }
 
                 } else {
                     System.out.println("Такой задачи нет: " + numberTask);
-                    httpExchange.sendResponseHeaders(405, 0);
+                    httpExchange.sendResponseHeaders(METHODNOTALLOWEDCODE, 0);
                 }
             }
             if ("task".equalsIgnoreCase(pathPart[2]) && query != null) {
@@ -286,7 +301,7 @@ public class HttpTaskServer {
                     return;
                 } else {
                     System.out.println("Такой задачи нет: " + numberTask);
-                    httpExchange.sendResponseHeaders(405, 0);
+                    httpExchange.sendResponseHeaders(METHODNOTALLOWEDCODE, 0);
                 }
             }
             if ("subtask".equalsIgnoreCase(pathPart[2]) && query != null) {
@@ -299,12 +314,12 @@ public class HttpTaskServer {
                         return;
                     } catch (NullPointerException e) {
                         System.out.println("Такой задачи нет: " + numberTask);
-                        httpExchange.sendResponseHeaders(405, 0);
+                        httpExchange.sendResponseHeaders(METHODNOTALLOWEDCODE, 0);
                     }
 
                 } else {
                     System.out.println("Такой задачи нет: " + numberTask);
-                    httpExchange.sendResponseHeaders(405, 0);
+                    httpExchange.sendResponseHeaders(METHODNOTALLOWEDCODE, 0);
                 }
             }
             if (pathPart.length == 3 && "task".equalsIgnoreCase(pathPart[2]) && query == null) {
@@ -327,7 +342,7 @@ public class HttpTaskServer {
 
 
             } else {
-                httpExchange.sendResponseHeaders(405, 0);
+                httpExchange.sendResponseHeaders(METHODNOTALLOWEDCODE, 0);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -335,7 +350,7 @@ public class HttpTaskServer {
     }
 
 
-    private int parseTaskId(String path) {
+    private static int parseTaskId(String path) {
         try {
             return Integer.parseInt(path);
         } catch (NumberFormatException e) {
@@ -358,7 +373,7 @@ public class HttpTaskServer {
     protected void sendText(HttpExchange h, String text) throws IOException {
         byte[] resp = text.getBytes(UTF_8);
         h.getResponseHeaders().add("Content-Type", "application/json");
-        h.sendResponseHeaders(200, resp.length);
+        h.sendResponseHeaders(OKCODE, resp.length);
         h.getResponseBody().write(resp);
     }
 

@@ -193,8 +193,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             for (Integer integer : historyFromString(line[line.length - 1])) {
                 fbt.getHistoryManager().add(fbt.returnHistoryTask(integer, fbt));
             }
-        } else {
-            return;
         }
     }
 
@@ -281,6 +279,12 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         fileBackedTasksManager.getPrioritizedTasks();
         System.out.println(fileBackedTasksManager.returnAllTask());
         System.out.println(fileBackedTasksManager.getPrioritizedTasks());
+        Subtask subtask4 = new Subtask(3,"Куwwпить обувь", "45 размер"
+                , Status.DONE, 1,"2022.10.23 11:30", "80");
+        fileBackedTasksManager.updateSubtaskTask(subtask4);
+        System.out.println(fileBackedTasksManager.returnAllTask());
+
+
     }
 
 }

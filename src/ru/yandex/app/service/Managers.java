@@ -3,6 +3,8 @@ package ru.yandex.app.service;
 import com.google.gson.*;
 import ru.yandex.app.model.*;
 
+import java.lang.reflect.Type;
+
 public final class Managers {
 
     private Managers() {
@@ -14,7 +16,8 @@ public final class Managers {
 
     public static Gson getDefaultGson() {
         return new GsonBuilder().setPrettyPrinting()
-                .registerTypeAdapter(Epic.class, (JsonSerializer<Epic>) (epic, type, jsonSerializationContext) -> {
+                .registerTypeAdapter(Epic.class, (JsonSerializer<Epic>) (Epic epic
+                        , Type type, JsonSerializationContext jsonSerializationContext) -> {
                     JsonObject jsonObject = new JsonObject();
                     jsonObject.addProperty("Type", String.valueOf(TypeTask.EPIC));
                     jsonObject.addProperty("idTask", epic.getIdTask());
@@ -26,7 +29,8 @@ public final class Managers {
                     jsonObject.addProperty("duration", epic.getDuration());
                     return jsonObject;
                 })
-                .registerTypeAdapter(Subtask.class, (JsonSerializer<Subtask>) (subtask, type, jsonSerializationContext) -> {
+                .registerTypeAdapter(Subtask.class, (JsonSerializer<Subtask>) (Subtask subtask,Type type
+                        ,JsonSerializationContext jsonSerializationContext) -> {
                     JsonObject jsonObject = new JsonObject();
                     jsonObject.addProperty("Type", String.valueOf(TypeTask.SUBTASK));
                     jsonObject.addProperty("idTask", subtask.getIdTask());
@@ -38,7 +42,8 @@ public final class Managers {
                     jsonObject.addProperty("duration", subtask.getDuration());
                     return jsonObject;
                 })
-                .registerTypeAdapter(CommonTask.class, (JsonSerializer<CommonTask>) (commonTask, type, jsonSerializationContext) -> {
+                .registerTypeAdapter(CommonTask.class, (JsonSerializer<CommonTask>) ( CommonTask commonTask
+                        ,Type type,JsonSerializationContext jsonSerializationContext) -> {
                     JsonObject jsonObject = new JsonObject();
                     jsonObject.addProperty("Type", String.valueOf(TypeTask.TASK));
                     jsonObject.addProperty("idTask", commonTask.getIdTask());
@@ -49,7 +54,8 @@ public final class Managers {
                     jsonObject.addProperty("duration", commonTask.getDuration());
                     return jsonObject;
                 })
-                .registerTypeAdapter(Epic.class, (JsonDeserializer<Epic>) (json, typeOfT, context) -> {
+                .registerTypeAdapter(Epic.class, (JsonDeserializer<Epic>) (JsonElement json
+                        ,Type typeOfT,JsonDeserializationContext context) -> {
                     JsonObject jsonObject = json.getAsJsonObject();
                     int idTask = jsonObject.get("idTask").getAsInt();
                     String nameTask = jsonObject.get("nameTask").getAsString();
@@ -58,7 +64,8 @@ public final class Managers {
                     return new Epic(idTask, nameTask, descriptionTask);
 
                 })
-                .registerTypeAdapter(CommonTask.class, (JsonDeserializer<CommonTask>) (json, typeOfT, context) -> {
+                .registerTypeAdapter(CommonTask.class, (JsonDeserializer<CommonTask>) (JsonElement json
+                        ,Type typeOfT,JsonDeserializationContext context) -> {
                     JsonObject jsonObject = json.getAsJsonObject();
                     String nameTask = jsonObject.get("nameTask").getAsString();
                     String descriptionTask = jsonObject.get("descriptionTask").getAsString();

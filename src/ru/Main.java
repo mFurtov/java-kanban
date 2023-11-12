@@ -7,8 +7,14 @@ import java.io.IOException;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
-        KVServer kvServer = new KVServer();
+    public static void main(String[] args)  {
+        KVServer kvServer = null;
+        try {
+            kvServer = new KVServer();
+        } catch (IOException e) {
+            System.out.println("KV сервер не был запущен из-за ошибки");
+            e.printStackTrace();
+        }
         kvServer.start();
 
         HttpTaskServer httpTaskServer = new HttpTaskServer();

@@ -9,6 +9,9 @@ import java.time.format.DateTimeFormatter;
 
 
 public class StartTaskComparator implements Comparator<Task>, Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm");
 
     @Override

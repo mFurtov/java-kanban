@@ -43,7 +43,6 @@ public class KVServer {
                 if (value != null) {
                     sendText(h, value);
                     System.out.println("Значение для ключа " + key + " успешно отправлено");
-                    return;
                 } else {
                     System.out.println("Значение для ключа " + key + " не найдено");
                     h.sendResponseHeaders(404, 0);
@@ -111,7 +110,7 @@ public class KVServer {
         server.start();
     }
 
-    private String generateApiToken() {
+    private static String generateApiToken() {
         return "" + System.currentTimeMillis();
     }
 

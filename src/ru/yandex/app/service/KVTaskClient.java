@@ -11,9 +11,9 @@ import java.time.Duration;
 
 
 public class KVTaskClient {
-    String apiToken;
-    HttpClient client;
-    String url;
+    private String apiToken;
+    private HttpClient client;
+    private String url;
 
     public KVTaskClient(String url) {
         this.url = url;
@@ -26,13 +26,12 @@ public class KVTaskClient {
         URI urlReg = URI.create(url + "/register");
         HttpRequest request = HttpRequest.newBuilder().uri(urlReg).GET().build();
         HttpResponse.BodyHandler<String> handler = HttpResponse.BodyHandlers.ofString();
-        HttpResponse<String> response = null;
         try {
-            response = client.send(request, handler);
+            HttpResponse<String> response = client.send(request, handler);
+            return response.body();
         } catch (IOException | InterruptedException e) {
-            System.out.println("Ошибка при регистрации на сервере KV");
+            throw new RegisterClientException();
         }
-        return response.body();
     }
 
     public void put(String key, String json) {

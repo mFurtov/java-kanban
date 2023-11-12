@@ -154,9 +154,11 @@ public class InMemoryTaskManager implements TaskManager {
         } else if (commonTaskMap.containsKey(id)) {
             historyManager.add(commonTaskMap.get(id));
             return commonTaskMap.get(id);
-        } else {
+        } else if (epicTaskMap.containsKey(id)) {
             historyManager.add(epicTaskMap.get(id));
             return epicTaskMap.get(id);
+        } else {
+            return new Task(-1, "EmptyTask", "EmptyTask");
         }
     }
 
@@ -235,12 +237,18 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void intersectionCheck(Task task) {
         for (Task pt : prioritizedTasks) {
-            if (task.getStartTime() != pt.getStartTime()
-                    || task.getStartTime() == null || task.getIdTask()==pt.getIdTask()) {
-            } else {
-                throw new RuntimeException("Задача " + task.getIdTask() + " " + task.getNameTask()
+            if (task.getStartTime() == pt.getStartTime() && task.getStartTime() != null
+                    && task.getIdTask() != pt.getIdTask()) {
+                throw new IntersectionTimeException("Задача " + task.getIdTask() + " " + task.getNameTask()
                         + " не может пересекаться по началу времени с " + pt.getIdTask() + " " + pt.getNameTask());
             }
+//            if (task.getStartTime() != pt.getStartTime()
+//                    || task.getStartTime() == null || task.getIdTask()==pt.getIdTask()) {
+//
+//            } else {
+//                throw new RuntimeException("Задача " + task.getIdTask() + " " + task.getNameTask()
+//                        + " не может пересекаться по началу времени с " + pt.getIdTask() + " " + pt.getNameTask());
+//            }
         }
     }
 
